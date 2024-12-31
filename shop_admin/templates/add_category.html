@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+
+<style>
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+</style>
+
+{% endblock %}
+
+{% block extra_nav_items %}
+
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-heading">MAIN MENU</li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'profile_view' %}">
+          <i class='bx bxs-user'></i>
+          <span>Profile</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_orders' %}">
+          <i class="bi bi-cart3"></i>
+          <span>Order</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_pincode' %}">
+          <i class='bx bxs-key'></i>
+          <span>Pin code</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_coupon' %}">
+          <i class='bx bxs-coupon bx-rotate-90' ></i>
+          <span>Coupon</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+          <a class="nav-link" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+              <i class='bx bxl-product-hunt'></i><span>Product</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+              <li>
+                  <a href="{% url 'list_category' %}" class="active">
+                      <i class="bi bi-circle"></i><span>Category</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_product' %}">
+                      <i class="bi bi-circle"></i><span>Product</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_variation' %}">
+                      <i class="bi bi-circle"></i><span>Variation</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_attribute' %}">
+                      <i class="bi bi-circle"></i><span>Attribute</span>
+                  </a>
+              </li>
+          </ul>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'logout' %}">
+          <i class='bx bxs-log-out' ></i>
+          <span>Sign Out</span>
+        </a>
+      </li>
+  
+    </ul>
+
+</aside>
+
+{% endblock %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+    {% if is_subcategory %}
+
+        <div class="pagetitle">
+          <h1>Add Subcategory</h1>
+          <nav>
+              <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                  <li class="breadcrumb-item">Product</li>
+                  <li class="breadcrumb-item"><a href="{% url 'list_category' %}">List Categories</a></li>
+                  <li class="breadcrumb-item active">Add Subcategory</li>
+              </ol>
+          </nav>
+      </div>
+
+      <div class="content">
+          
+          <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+              <a href="{% url 'list_category' %}" class="btn btn-secondary" style="padding: 0.3rem 0.5rem; background: #4154f1; color: #fff;">List Categories</a>
+          </div>
+
+          <div class="card" style="max-width: 600px; margin-top: 30px;">
+              <div class="card-body">
+                  <form method="POST" enctype="multipart/form-data" novalidate>
+                      {% csrf_token %}
+                      
+                      <div class="mb-3 pt-4">
+                          <label for="{{ form.name.id_for_label }}" class="form-label">Category Name</label>
+                          {{ category_form.name }}
+                          {% if category_form.name.errors %}
+                              <div class="invalid-feedback d-block">
+                                  {% for error in category_form.name.errors %}
+                                      <p>{{ error }}</p>
+                                  {% endfor %}
+                              </div>
+                          {% endif %}
+                      </div>
+
+                      <div class="mb-3">
+                          <label for="{{ form.parent.id_for_label }}" class="form-label">Parent Category</label>
+                          {{ category_form.parent }}
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Select Variations</label>
+                        {{ subcategory_variation_form.variation }}
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Select Attributes</label>
+                        {{ subcategory_attribute_form.attribute }}
+                      </div>
+
+                      <div class="d-flex justify-content-center">
+                          <button type="submit" class="btn btn-primary me-2">Save</button>
+                          <a href="{% url 'list_category' %}" class="btn btn-secondary">Back</a>
+                      </div>
+
+                  </form>
+              </div>
+          </div>
+
+      </div>
+
+    {% else %}
+
+        <div class="pagetitle">
+            <h1>Add Category</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                    <li class="breadcrumb-item">Product</li>
+                    <li class="breadcrumb-item"><a href="{% url 'list_category' %}">List Categories</a></li>
+                    <li class="breadcrumb-item active">Add Category</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="content">
+            
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+                <a href="{% url 'list_category' %}" class="btn btn-secondary" style="padding: 0.3rem 0.5rem; background: #4154f1; color: #fff;">List Categories</a>
+            </div>
+
+            <div class="card" style="max-width: 600px; margin-top: 30px;">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3 pt-4">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Category Name</label>
+                            {{ category_form.name }}
+                            {% if category_form.name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in category_form.name.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary me-2">Save</button>
+                            <a href="{% url 'list_category' %}" class="btn btn-secondary">Back</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+      {% endif %}
+</main>
+
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+  <div class="toast-container">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="toast align-items-center text-white bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                  <div class="toast-body">
+                      {{ message }}
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+          </div>
+          {% endfor %}
+      {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+      var toastList = toastElList.map(function (toastEl) {
+          return new bootstrap.Toast(toastEl, { delay: 3000 });
+      });
+      toastList.forEach(toast => toast.show());
+  });
+</script>
+
+{% endblock %}
+

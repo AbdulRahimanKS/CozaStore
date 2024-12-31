@@ -1,0 +1,81 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+
+{% endblock %}
+
+{% block header %}
+
+<header class="header-v4">
+
+{% endblock %}
+
+{% block shadow1 %}
+
+<div class="wrap-menu-desktop how-shadow1">
+
+{% endblock %}
+
+{% block menu %}
+<ul class="main-menu">
+	<li>
+		<a href="/">Home</a>
+	</li>
+
+	<li>
+		<a href="{% url 'shop_view' %}">Shop</a>
+	</li>
+
+	<li class="label1" data-label1="hot">
+		<a href="{% url 'featured_view' %}">Featured</a>
+	</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+	<div class="bg0 p-t-75 p-b-75">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <!-- Success Message -->
+                    <div class="alert alert-success" role="alert">
+                        <h2 class="font-weight-bold text-success">Order Placed Successfully!</h2>
+                        <p>Your order has been placed successfully. Thank you for shopping with us!</p>
+                    </div>
+    
+                    <!-- Order Details -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h4>Your Order Details</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Order Number:</strong> #&nbsp;{{ order_details.order_id }}</p>
+                            <p><strong>Estimated Delivery:</strong> {{ order_details.delivery_days }}</p>
+                            <p><strong>Shipping Address:</strong> {{ order_details.address}}, {{ order_details.locality }}, 
+								{{ order_details.city }}, {{ order_details.state }}, {{ order_details.pin_code }}, {{ order_details.mobile }}</p>
+                            <p><strong>Payment Method:</strong> {{ order_details.payment_method }}</p>
+                        </div>
+                    </div>
+    
+                    <!-- Buttons -->
+                    <div class="mt-4">
+                        <a href="/" class="btn btn-dark">Return to Homepage</a>
+                        <a href="{% url 'orders_list' %}" class="btn btn-outline-success">My Orders</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block script %}
+
+</body>
+</html>
+
+{% endblock %}
+

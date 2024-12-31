@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coza Store</title>
+    <link rel="icon" type="image/png" href="{% static 'products/images/icons/favicon.png' %}" />
+    
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <link href="{% static 'shop_admin/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shop_admin/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'shop_admin/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shop_admin/vendor/quill/quill.snow.css' %}" rel="stylesheet">
+    <link href="{% static 'shop_admin/vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+    <link href="{% static 'shop_admin/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'shop_admin/vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+    <link href="{% static 'shop_admin/css/style.css' %}" rel="stylesheet">
+
+    <style>
+      .unread {
+        background-color: #f0f2f5;
+      }
+      .list-group-item:hover {
+          opacity: 0.8;
+      }
+    </style>
+
+    {% block styles %}
+
+    {% endblock %}
+
+</head>
+
+<body>
+
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="{% url 'dashboard' %}" class="logo d-flex align-items-center">
+        <img src="{% static 'shop_admin/img/logo_main.png' %}" alt="logo-img">
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div>
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>  
+            {% if total_notifications > 0 %}
+              <span class="badge bg-primary badge-number">{{ total_notifications }}</span>
+            {% endif %}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications p-2 ms-2" style="width:325px">
+            <li class="dropdown-header">
+              You have {{ total_notifications }} new notification{% if total_notifications != 1 %}s{% endif %}
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            {% for notification in sliced_notifications %}
+            <li class="notification-item {% if notification.is_read %}read{% else %}unread{% endif %}" onclick="markAsRead({{ notification.id }}, this)" style="cursor:pointer">
+              <i class="bi bi-bag-check text-success"></i>
+              <div>
+                <h4>{{ notification.message }}</h4>
+                <p>{{ notification.created_at|timesince }} ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            {% empty %}
+              <li class="text-center mt-3 mb-3">
+                <span>No new notifications</span>
+              </li>
+            {% endfor %}
+
+            <li class="dropdown-footer">
+              <a href="{% url 'notifications' %}">Show all notifications</a>
+            </li>
+
+          </ul>
+
+        </li>
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            {% if user_nav.profile_image %}
+            <img src="{{ user_nav.profile_image }}" class="rounded-circle">
+            {% endif %}
+            <span class="d-none d-md-block dropdown-toggle ps-2">{{ user_nav.username }}</span>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>{{ user_nav.username }}</h6>
+              <span>{{ user_nav.job }}</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'profile_view' %}">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+      </ul>
+    </nav>
+
+  </header>
+
+  {% block extra_nav_items %}
+
+  {% endblock %}
+  
+  {% block content %}
+        
+  {% endblock %}
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'shop_admin/vendor/apexcharts/apexcharts.min.js' %}"></script>
+  <script src="{% static 'shop_admin/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'shop_admin/vendor/chart.js/chart.umd.js' %}"></script>
+  <script src="{% static 'shop_admin/vendor/echarts/echarts.min.js' %}"></script>
+  <script src="{% static 'shop_admin/vendor/quill/quill.js' %}"></script>
+  <script src="{% static 'shop_admin/vendor/simple-datatables/simple-datatables.js' %}"></script>
+  <script src="{% static 'shop_admin/vendor/tinymce/tinymce.min.js' %}"></script>
+  <script src="{% static 'shop_admin/vendor/php-email-form/validate.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'shop_admin/js/main.js' %}"></script>
+
+  <script>
+
+    function markAsRead(notificationId, element) {
+        fetch(`../read_notifications/${notificationId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                window.location.reload();
+            } else {
+                console.error(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+ 
+  </script>
+  
+  </body>
+  
+  </html>

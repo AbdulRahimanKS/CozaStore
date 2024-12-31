@@ -1,0 +1,437 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+{% load humanize %}
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      a:hover {
+        text-decoration: none;
+      }
+    </style>
+
+{% endblock %}    
+
+{% block extra_nav_items %}
+
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+    <li class="nav-heading">MAIN MENU</li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'dashboard' %}" class="active">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'profile_view' %}">
+        <i class='bx bxs-user'></i>
+        <span>Profile</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'list_orders' %}">
+        <i class="bi bi-cart3"></i>
+        <span>Order</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'list_pincode' %}">
+        <i class='bx bxs-key'></i>
+        <span>Pin code</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'list_coupon' %}">
+        <i class='bx bxs-coupon bx-rotate-90' ></i>
+        <span>Coupon</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+          <i class='bx bxl-product-hunt'></i><span>Product</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+              <a href="{% url 'list_category' %}">
+                  <i class="bi bi-circle"></i><span>Category</span>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'list_product' %}">
+                  <i class="bi bi-circle"></i><span>Product</span>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'list_variation' %}">
+                  <i class="bi bi-circle"></i><span>Variation</span>
+              </a>
+          </li>
+          <li>
+            <a href="{% url 'list_attribute' %}">
+                <i class="bi bi-circle"></i><span>Attribute</span>
+            </a>
+          </li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'logout' %}">
+        <i class='bx bxs-log-out' ></i>
+        <span>Sign Out</span>
+      </a>
+    </li>
+
+  </ul>
+
+</aside>
+
+{% endblock %}
+
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb" style="padding:0; background-color:#fff;">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section dashboard">
+        <div class="row">
+  
+          <!-- Left side columns -->
+          <div class="col-lg-12">
+            <div class="row">
+  
+              <!-- Sales Card -->
+              <div class="col-xxl-4 col-md-4">
+                <div class="card info-card sales-card">
+  
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter</h6>
+                      </li>
+  
+                      <li><a class="dropdown-item" href="?sales_filter=today">Today</a></li>
+                      <li><a class="dropdown-item" href="?sales_filter=this_month">This Month</a></li>
+                      <li><a class="dropdown-item" href="?sales_filter=this_year">This Year</a></li>
+                    </ul>
+                  </div>
+  
+                  <div class="card-body">
+                    <h5 class="card-title">Sales <span>| {% if sales_timeframe == 'today' %} Today {% elif sales_timeframe == 'this_month' %} This Month {% else %} This Year {% endif %}</span></h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-cart"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6>{{ sales_today_count }}</h6>
+                        {% if percentage_sales_today >= 0 %}
+                        <span class="text-success small pt-1 fw-bold">{{ percentage_sales_today }}%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                        {% else %}
+                        <span class="text-danger small pt-1 fw-bold">{{ percentage_sales_today }}%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+  
+                </div>
+              </div><!-- End Sales Card -->
+  
+              <!-- Revenue Card -->
+              <div class="col-xxl-4 col-md-4">
+                <div class="card info-card revenue-card">
+  
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter</h6>
+                      </li>
+  
+                      <li><a class="dropdown-item" href="?revenue_filter=today">Today</a></li>
+                      <li><a class="dropdown-item" href="?revenue_filter=this_month">This Month</a></li>
+                      <li><a class="dropdown-item" href="?revenue_filter=this_year">This Year</a></li>
+                    </ul>
+                  </div>
+  
+                  <div class="card-body">
+                    <h5 class="card-title">Revenue <span>| {% if revenue_timeframe == 'today' %} Today {% elif revenue_timeframe == 'this_month' %} This Month {% else %} This Year {% endif %}</span></h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-currency-dollar"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6>₹ {{ revenue_monthly|intcomma }}</h6>
+                        {% if percentage_revenue_monthly >= 0 %}
+                        <span class="text-success small pt-1 fw-bold">{{ percentage_revenue_monthly }}%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                        {% else %}
+                        <span class="text-danger small pt-1 fw-bold">{{ percentage_revenue_monthly }}%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+  
+                </div>
+              </div><!-- End Revenue Card -->
+  
+              <!-- Customers Card -->
+              <div class="col-xxl-4 col-md-4">
+  
+                <div class="card info-card customers-card">
+  
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter</h6>
+                      </li>
+  
+                      <li><a class="dropdown-item" href="?customer_filter=today">Today</a></li>
+                      <li><a class="dropdown-item" href="?customer_filter=this_month">This Month</a></li>
+                      <li><a class="dropdown-item" href="?customer_filter=this_year">This Year</a></li>
+                    </ul>
+                  </div>
+  
+                  <div class="card-body">
+                    <h5 class="card-title">Customers <span>| {% if customer_timeframe == 'today' %} Today {% elif customer_timeframe == 'this_month' %} This Month {% else %} This Year {% endif %}</span></h5>
+  
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-people"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6>{{ customers_yearly|intcomma }}</h6>
+                        {% if percentage_customers_yearly >= 0 %}
+                        <span class="text-success small pt-1 fw-bold">{{ percentage_customers_yearly }}%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                        {% else %}
+                        <span class="text-danger small pt-1 fw-bold">{{ percentage_customers_yearly }}%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+                        {% endif %}
+                      </div>
+                    </div>
+  
+                  </div>
+                </div>
+  
+              </div><!-- End Customers Card -->
+  
+              <!-- Reports -->
+              <div class="col-12">
+                <div class="card">
+  
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter</h6>
+                      </li>
+  
+                      <li><a class="dropdown-item" href="?report_filter=this_month">This Month</a></li>
+                      <li><a class="dropdown-item" href="?report_filter=this_year">This Year</a></li>
+                    </ul>
+                  </div>
+  
+                  <div class="card-body">
+                    <h5 class="card-title">Reports |<span> {% if report_data_timeframe == 'this_month' %} This Month {% else %} This Year {% endif %}</span></h5>
+  
+                    <!-- Line Chart -->
+                    <div id="reportsChart"></div>
+  
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                          const reportData = {{ report_data|safe }};
+                          const salesData = reportData.sales_counts;
+                          const revenueData = reportData.scaled_revenues;
+                          const firstTimeCustomers = reportData.first_time_customers;
+                          const timeCategories = reportData.dates;
+
+                          new ApexCharts(document.querySelector("#reportsChart"), {
+                            series: [
+                              { name: 'Sales', data: salesData },
+                              { name: 'Revenue (scaled)', data: revenueData },
+                              { name: 'Customers', data: firstTimeCustomers }
+                            ],
+                            chart: {
+                              height: 350,
+                              type: 'area',
+                              toolbar: { show: false }
+                            },
+                            markers: { size: 4 },
+                            colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                            fill: {
+                              type: "gradient",
+                              gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.4, stops: [0, 90, 100] }
+                            },
+                            dataLabels: { enabled: false },
+                            stroke: { curve: 'smooth', width: 2 },
+                            xaxis: {
+                              type: 'datetime',
+                              categories: timeCategories
+                            },
+                            tooltip: {
+                              x: { format: 'dd/MM/yy' }
+                            }
+                          }).render();
+                        });
+                      </script>
+                    <!-- End Line Chart -->
+  
+                  </div>
+  
+                </div>
+              </div><!-- End Reports -->
+  
+              <!-- Recent Sales -->
+              <div class="col-12">
+                <div class="card recent-sales overflow-auto">
+  
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter</h6>
+                      </li>
+  
+                      <li><a class="dropdown-item" href="?recent_filter=today">Today</a></li>
+                      <li><a class="dropdown-item" href="?recent_filter=this_month">This Month</a></li>
+                      <li><a class="dropdown-item" href="?recent_filter=this_year">This Year</a></li>
+                    </ul>
+                  </div>
+  
+                  <div class="card-body">
+                    <h5 class="card-title">Recent Sales <span>| {% if recent_timeframe == 'today' %} Today {% elif recent_timeframe == 'this_month' %} This Month {% else %} This Year {% endif %}</span></h5>
+  
+                    <table class="table table-borderless datatable">
+                      <thead>
+                        <tr>
+                          <th scope="col">OrderID</th>
+                          <th scope="col">Customer</th>
+                          <th scope="col">Product</th>
+                          <th scope="col">Quantity</th>
+                          <th scope="col">Unit Price</th>
+                          <th scope="col">Total Price</th>
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in recent_data %}
+                        <tr>
+                          <th scope="row">{{ data.order.order_id }}</th>
+                          <td>{{ data.order.user.first_name }} {{ data.order.user.surname }}</td>
+                          <td><a href="{{ data.product.get_url }}" target="_blank" class="text-primary">{{ data.product_name }}</a></td>
+                          <td class="text-center">{{ data.quantity }}</td>
+                          <td class="text-center">₹ {{ data.product_discounted_price }}</td>
+                          <td class="text-center">₹ {{ data.get_cost }}</td>
+                          {% if data.tracking_info %}
+                            {% if data.tracking_info.status == 'processing' %}
+                                <td><span class="badge badge-warning">Processing</span></td>
+                            {% elif data.tracking_info.status == 'shipped' %}
+                                <td><span class="badge badge-primary">Shipped</span></td>
+                            {% elif data.tracking_info.status == 'out_for_delivery' %}
+                                <td><span class="badge badge-info">Out for Delivery</span></td>
+                            {% elif data.tracking_info.status == 'delivered' %}
+                                <td><span class="badge badge-success">Delivered</span></td>
+                            {% elif data.tracking_info.status == 'returned' %}
+                                <td><span class="badge badge-info">Returned</span></td>
+                            {% elif data.tracking_info.status == 'cancelled' %}
+                                <td><span class="badge badge-danger">Cancelled</span></td>
+                            {% else %}
+                                <td><span class="badge badge-secondary">Pending</span></td>
+                            {% endif %}
+                          {% endif %}
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+  
+                  </div>
+  
+                </div>
+              </div><!-- End Recent Sales -->
+  
+              <!-- Top Selling -->
+              <div class="col-12">
+                <div class="card top-selling overflow-auto">
+  
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter</h6>
+                      </li>
+  
+                      <li><a class="dropdown-item" href="?topSelling_filter=today">Today</a></li>
+                      <li><a class="dropdown-item" href="?topSelling_filter=this_month">This Month</a></li>
+                      <li><a class="dropdown-item" href="?topSelling_filter=this_year">This Year</a></li>
+                    </ul>
+                  </div>
+  
+                  <div class="card-body pb-0">
+                    <h5 class="card-title">Top Selling <span>| {% if topSelling_timeframe == 'today' %} Today {% elif topSelling_timeframe == 'this_month' %} This Month {% else %} This Year {% endif %}</span></h5>
+  
+                    <table class="table table-borderless">
+                      <thead>
+                        <tr>
+                          <th scope="col">Preview</th>
+                          <th scope="col">Product</th>
+                          <th scope="col">Unit Price</th>
+                          <th scope="col">Sold</th>
+                          <th scope="col">Revenue</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% if topSelling_data %}
+                        {% for data in topSelling_data %}
+                        <tr>
+                          <th scope="row">
+                            {% if data.first_image %}
+                            <a href="{{ data.url }}" target="_blank"><img src="{{ data.first_image }}" alt="Product Image"></a>
+                            {% else %}
+                              No image available
+                            {% endif %}
+                          </th>
+                          <td><a href="{{ data.url }}" target="_blank" class="text-primary">{{ data.product_name }}</a></td>
+                          <td>₹ {{ data.product_discounted_price }}</td>
+                          <td class="fw-bold">{{ data.total_quantity }}</td>
+                          <td>₹ {{ data.total_cost }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <td class="datatable-empty" colspan="7">No entries found</td>
+                        {% endif %}
+                      </tbody>
+                    </table>
+  
+                  </div>
+  
+                </div>
+              </div><!-- End Top Selling -->
+  
+            </div>
+          </div>
+  
+        </div>
+      </section>
+
+</main>
+
+
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+{% load humanize %}
+
+<style>
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+</style>
+
+{% endblock %}
+
+{% block extra_nav_items %}
+
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-heading">MAIN MENU</li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'profile_view' %}">
+          <i class='bx bxs-user'></i>
+          <span>Profile</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'list_orders' %}" class="active">
+          <i class="bi bi-cart3"></i>
+          <span>Order</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_pincode' %}">
+          <i class='bx bxs-key'></i>
+          <span>Pin code</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_coupon' %}">
+          <i class='bx bxs-coupon bx-rotate-90' ></i>
+          <span>Coupon</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <i class='bx bxl-product-hunt'></i><span>Product</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <li>
+                <a href="{% url 'list_category' %}">
+                    <i class="bi bi-circle"></i><span>Category</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'list_product' %}">
+                    <i class="bi bi-circle"></i><span>Product</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'list_variation' %}">
+                    <i class="bi bi-circle"></i><span>Variation</span>
+                </a>
+            </li>
+            <li>
+              <a href="{% url 'list_attribute' %}">
+                  <i class="bi bi-circle"></i><span>Attribute</span>
+              </a>
+            </li>
+        </ul>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'logout' %}">
+          <i class='bx bxs-log-out' ></i>
+          <span>Sign Out</span>
+        </a>
+      </li>
+  
+    </ul>
+
+</aside>
+
+{% endblock %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Update Order</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'list_orders' %}">List Orders</a></li>
+                <li class="breadcrumb-item active">Update Order</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="content">
+        
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <a href="{% url 'list_orders' %}" class="btn btn-secondary" style="padding: 0.3rem 0.5rem; background: #4154f1; color: #fff;">List Orders</a>
+        </div>
+
+        <div class="card ps-4 pt-4">
+            <div class="row" style="line-height:1">
+                <div class="col-md-6 mb-4">
+                    <h5>Shipping Address</h5>
+                    <p class="mt-3">{{ order_item.order.address_name }}</p>
+                    <p>{{ order_item.order.address_address }}, {{ order_item.order.address_locality }}</p>
+                    <p>{{ order_item.order.address_city }}, {{ order_item.order.address_state }}, {{ order_item.order.address_pin_code }}</p>
+                    <p>Phone: {{ order_item.order.address_mobile }}</p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <h5>Billing Details</h5>
+                    <p class="mt-3"><strong>List price: </strong><span style="color: grey; font-family: Arial, sans-serif;">₹ {{ order_item.product_price|intcomma }}</strong></p>
+                    <p class="mt-1"><strong>Selling price: </strong><span style="color: grey; font-family: Arial, sans-serif;">₹ {{ order_item.product_discounted_price|intcomma }}</strong></p>
+                    {% if order_item.get_discount > 0 %}
+                      <p class="mt-1"><strong>Discount: </strong><span style="color: grey; font-family: Arial, sans-serif;">- ₹ {{ order_item.get_discount|intcomma }}</strong></p>
+                    {% endif %}
+                    <p class="mt-1"><strong>Total Paid: </strong><span style="color: grey; font-family: Arial, sans-serif;">₹ {% if order_item.is_paid %} {{ order_item.get_cost|intcomma }} {% else %} 0 {% endif %}</strong></p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <h5>Product Information</h5>
+                    <p class="mt-3"><strong>Product name: </strong>{{ order_item.product_name }}</p>
+                    <p class="mt-1"><strong>SKU: </strong>{{ order_item.sku }}</p>
+                    <p class="mt-1"><strong>Quantity: </strong>{{ order_item.quantity }}</p>
+                    <p class="mt-1"><strong>Delivery date: </strong>{{ order_item.delivery_date }}</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 30px;">
+            <div class="card-body mt-4">
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_item_id" value="{{ order_item.id }}">
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="order_id" class="me-2 mb-0" style="width:180px">Order ID</label>
+                        <input type="text" name="order_id" id="order_id" class="form-control" style="background-color: #f6f6f6" value="{{ order_item.order.order_id }}" readonly>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-center">
+                        <label for="tracking_id" class="me-2 mb-0" style="width:180px">Tracking ID</label>
+                        <input type="text" name="tracking_id" id="tracking_id" class="form-control" style="background-color: #f6f6f6" value="{{ order_item.tracking_info.tracking_id }}" readonly>
+                    </div> 
+                    
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="payment_method" class="me-2 mb-0" style="width:180px">Payment Method</label>
+                      <input type="text" name="payment_method" id="payment_method" class="form-control" style="background-color: #f6f6f6" value="{{ order_item.order.payment_type }}" readonly>
+                    </div>
+                    
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="order_date" class="me-2 mb-0" style="width:180px">Order Date & Time</label>
+                      <input type="text" name="order_date" id="order_date" class="form-control" style="background-color: #f6f6f6" value="{{ order_item.order.order_time }}" readonly>
+                    </div>
+
+                    {% if order_item.tracking_info.delivered_date %}
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="delivered_date" class="me-2 mb-0" style="width:180px">Delivered Date & Time</label>
+                      <input type="text" name="delivered_date" id="delivered_date" class="form-control" style="background-color: #f6f6f6" value="{{ order_item.tracking_info.delivered_date }}" readonly>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="is_paid" class="me-2 mb-0" style="width:180px">Is Paid</label>
+                      {% if order_item.order.payment_type == 'cod' %}
+                        <select name="is_paid" id="is_paid" class="form-select">
+                          <option value="True" {% if order_item.is_paid %} selected {% endif %}>Yes</option>
+                          <option value="False" {% if not order_item.is_paid %} selected {% endif %}>No</option>
+                        </select>
+                      {% else %}
+                        <input type='text' name='is_paid' class='form-control' style="background-color: #f6f6f6" value="{{ order_item.is_paid }}" readonly>
+                      {% endif %}
+                    </div> 
+
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="order_status" class="me-2 mb-0" style="width:180px">Order Status</label>
+                      {% if order_item.tracking_info.status == 'returned' or order_item.tracking_info.status == 'cancelled' %}
+                          <input type="text" id="order_status" name="order_status" class="form-control" style="background-color: #f6f6f6" value="{{ order_item.tracking_info.get_status_display }}" readonly>
+                      {% else %}
+                          <select name="order_status" id="order_status" class="form-select">
+                              <option value="processing" {% if order_item.tracking_info.status == 'processing' %} selected {% endif %}>Processing</option>
+                              <option value="shipped" {% if order_item.tracking_info.status == 'shipped' %} selected {% endif %}>Shipped</option>
+                              <option value="out_for_delivery" {% if order_item.tracking_info.status == 'out_for_delivery' %} selected {% endif %}>Out for Delivery</option>
+                              <option value="delivered" {% if order_item.tracking_info.status == 'delivered' %} selected {% endif %}>Delivered</option>
+                          </select>
+                      {% endif %}
+                    </div>
+                    
+                    {% if order_item.tracking_info.status == 'delivered' and order_item.order.payment_type != 'cod' and order_item.tracking_info.action_info.status == 'pending' %}
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="action" class="me-2 mb-0" style="width:180px">Return Request</label>
+                          <select name="action" id="action" class="form-select">
+                              <option value="">--Select Approve or Reject---</option>
+                              <option value="approve">Approve</option>
+                              <option value="reject">Reject</option>
+                          </select>
+                    </div>
+                    {% endif %}
+
+                    {% if order_item.tracking_info.action_info.status == 'rejected' or order_item.tracking_info.action_info.status == 'completed' and not order_item.tracking_info.status == 'cancelled' %}
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="return_reason" class="me-2 mb-0" style="width:180px">Return Reason</label>
+                      <textarea id="return_reason" name="return_reason" class="form-control" style="background-color: #f6f6f6" readonly>{{ order_item.tracking_info.action_info.reason }}</textarea>
+                    </div>
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="action" class="me-2 mb-0" style="width:180px">Return Request</label>
+                      <input type="text" id="action" name="action" class="form-control" style="background-color: #f6f6f6" value="{% if order_item.tracking_info.action_info.status == 'rejected' %}Rejected{% else %}Approved{% endif %}" readonly>
+                    </div>
+                    {% endif %}
+
+                    {% if order_item.tracking_info.status == 'cancelled' %}
+                    <div class="mb-3 d-flex align-items-center">
+                      <label for="return_reason" class="me-2 mb-0" style="width:180px">Cancelled Reason</label>
+                      <textarea id="return_reason" name="return_reason" class="form-control" style="background-color: #f6f6f6" readonly>{{ order_item.tracking_info.action_info.reason }}</textarea>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-center mt-5">
+                        <button type="submit" class="btn btn-primary me-2">Update</button>
+                        <a href="{% url 'list_orders' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+  <div class="toast-container">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="toast align-items-center text-white bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                  <div class="toast-body">
+                      {{ message }}
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+          </div>
+          {% endfor %}
+      {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+      var toastList = toastElList.map(function (toastEl) {
+          return new bootstrap.Toast(toastEl, { delay: 3000 });
+      });
+      toastList.forEach(toast => toast.show());
+  });
+</script>
+
+{% endblock %}
+

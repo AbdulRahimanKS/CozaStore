@@ -1,0 +1,573 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+{% load humanize %}
+
+	<style>
+		.ratings-summary {
+			display: flex;
+			align-items: center;
+			font-size: 16px;
+			color: #333;
+		}
+		.ratings-summary h4 {
+			padding: 4px 13px;
+			background: #26a541;
+			border-radius: 20px;
+			font-size: 13px;
+			margin-right: 10px;
+			color: #fff;
+		}
+		.ratings-summary p {
+			font-size: 14px;
+			color: #777;
+		}
+		#loading-spinner {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 10;
+		}
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .pagination .page-item {
+            margin: 0 2px;
+        }
+        .pagination .page-link {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination .page-link:hover {
+			background-color: #f0f0f0;
+		}
+		.pagination .page-item.active .page-link {
+			background-color: #b2b2b2;
+			color: #fff;
+			border-color: #b2b2b2;
+		}
+		.pagination .page-item.disabled .page-link {
+			color: #ccc;
+			pointer-events: none;
+		}
+		.stock-warning {
+			color: #f1aa2b; 
+			font-weight: bold; 
+			margin-top: 10px;
+		}
+		.out-of-stock {
+			color: #e03838;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+		.btn-apply-filter:hover {
+			background-color: #6666;
+		}
+		.btn-cancel-filter:hover {
+			background-color: #6666; 
+		}
+		input[type=radio] {
+			appearance: none;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			position: absolute;
+			opacity: 0;
+		}
+		label {
+			cursor: pointer;
+			position: relative;
+		}
+		label:hover {
+			color: #6c7ae0;
+		}
+		.selected {
+			color: #6c7ae0;
+		}
+    </style>
+
+	{% endblock %}
+
+	{% block header %}
+	
+	<header class="header-v4">
+	
+	{% endblock %}
+	
+	{% block shadow1 %}
+	
+	<div class="wrap-menu-desktop how-shadow1">
+	
+	{% endblock %}
+	
+	{% block menu %}
+	<ul class="main-menu">
+		<li>
+			<a href="/">Home</a>
+		</li>
+	
+		<li>
+			<a href="{% url 'shop_view' %}">Shop</a>
+		</li>
+	
+		<li class="label1" data-label1="hot">
+			<a href="{% url 'featured_view' %}">Featured</a>
+		</li>
+	</ul>
+	{% endblock %}
+	
+	{% block content %}
+
+	<div class="bg0 m-t-23 p-b-100">
+		<div class="container">
+			<div class="flex-w flex-sb-m p-b-52 justify-content-space-between">
+				<div class="bread-crumb flex-w p-r-15 p-lr-0-lg">
+					<a href="/" class="stext-111 cl8 hov-cl1 trans-04">
+						Home
+						<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+					</a>
+
+					<a href="{% url 'shop_view' %}" class="stext-111 cl8 hov-cl1 trans-04">
+						Shop
+						<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+					</a>
+		
+					{% if category %}
+					<a href="{% url 'search_products_categoryid' category.slug %}" class="stext-111 cl8 hov-cl1 trans-04">
+						{{ category }}
+						<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+					</a>
+					{% endif %}
+		
+					{% if subcategory %}
+					<span class="stext-111 cl4">
+						{{ subcategory }}
+					</span>
+					{% endif %}
+				</div>
+
+				<div class="flex-w flex-c-m m-tb-10">
+					<div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+						<i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+						<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+						Filter
+					</div>
+				</div>
+
+				<div class="dis-none panel-filter w-full p-t-10">
+					{% if category %}
+					<form id="filter-form" method="get" action="{% url 'search_products_categoryid' category.slug %}">
+					{% endif %}
+						<!-- Your filter options here -->
+						<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-b-27 p-lr-15-sm">
+							<!-- Sort By Filter -->
+							<div class="filter-col1 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">Sort By</div>
+								<ul>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="sort" value="newness" onclick="selectOption(this)">
+											Newest First
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="sort" value="rating" onclick="selectOption(this)">
+											Average Rating
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="sort" value="price_low_high" onclick="selectOption(this)">
+											Price: Low to High
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="sort" value="price_high_low" onclick="selectOption(this)">
+											Price: High to Low
+										</label>
+									</li>
+								</ul>								
+							</div>
+					
+							<!-- Price Filter -->
+							<div class="filter-col2 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">Price</div>
+								<ul>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="price" value="all" onclick="selectOption(this)">
+											All
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="price" value="0-500" onclick="selectOption(this)">
+											₹0 - ₹500
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="price" value="500-1000" onclick="selectOption(this)">
+											₹500 - ₹1000
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="price" value="1000-5000" onclick="selectOption(this)">
+											₹1000 - ₹5000
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="price" value="5000-10000" onclick="selectOption(this)">
+											₹5000 - ₹10000
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="price" value="10000+" onclick="selectOption(this)">
+											₹10000+
+										</label>
+									</li>
+								</ul>
+							</div>
+					
+							<!-- Discount Percentage Filter -->
+							<div class="filter-col4 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">Discount Percentage</div>
+								<ul>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="discount" value="all" onclick="selectOption(this)">
+											All
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="discount" value="10" onclick="selectOption(this)">
+											10% and above
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="discount" value="20" onclick="selectOption(this)">
+											20% and above
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="discount" value="30" onclick="selectOption(this)">
+											30% and above
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label>
+											<input type="radio" name="discount" value="50" onclick="selectOption(this)">
+											50% and above
+										</label>
+									</li>
+								</ul>
+							</div>
+					
+							<!-- Customer Ratings Filter -->
+							<div class="filter-col5 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">Customer Ratings</div>
+								<ul>
+									<li class="p-b-6">
+										<label for="rating-all">
+											<input type="radio" id="rating-all" name="rating" value="all" onclick="selectOption(this)">
+											All
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label for="rating-4">
+											<input type="radio" id="rating-4" name="rating" value="4" onclick="selectOption(this)">
+											4 stars & above
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label for="rating-3">
+											<input type="radio" id="rating-3" name="rating" value="3" onclick="selectOption(this)">
+											3 stars & above
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label for="rating-2">
+											<input type="radio" id="rating-2" name="rating" value="2" onclick="selectOption(this)">
+											2 stars & above
+										</label>
+									</li>
+									<li class="p-b-6">
+										<label for="rating-1">
+											<input type="radio" id="rating-1" name="rating" value="1" onclick="selectOption(this)">
+											1 star & above
+										</label>
+									</li>
+								</ul>
+							</div>							
+					
+							<div class="w-full d-flex justify-content-center">
+								<button type="submit" class="btn-apply-filter stext-106" style="color:#666; border:1px solid #d3d4cf; padding:10px 15px;">Apply Filters</button>
+								<button type="reset" class="btn-cancel-filter stext-106" style="color:#666; border:1px solid #d3d4cf; padding:10px 15px; margin-left:10px;">Reset</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div id="product-list" class="product-rows">
+				{% if products %}
+                <div class="products row isotope-grid">
+                    {% for product in products %}
+                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
+                            <div class="block2">
+                                {% if product.image %}
+                                    <div class="block2-pic hov-img0">
+                                        <a href="{{ product.get_url }}" target="_blank"><img src="{{ product.image.image.url }}" alt="IMG-PRODUCT"></a>
+                                    </div>
+                                {% endif %}
+                                <div class="block2-txt flex-w flex-t p-t-14">
+                                    <div class="block2-txt-child1 flex-col-l ">
+                                        <p class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            <span style="color: #121010; font-weight: 600">{{ product.brand }}</span>
+										</p>
+										{% if product.total_ratings > 0 %}
+											<div class="ratings-summary pt-1 pb-2">
+												<h4>{{ product.average_rating}}
+													<i class="fa fa-star"></i>
+												</h4>
+												<p>{{ product.total_ratings }} ratings and {{ product.total_reviews }} reviews</p>
+											</div>
+										{% else %}
+											<p class="pt-1 pb-2">No ratings yet</p>
+										{% endif %}
+                                        <a href="{{ product.get_url }}" target="_blank" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            {{ product.name }}
+                                        </a>
+                                        <span>
+											{% if product.discounted_price and product.discounted_price != product.original_price %}
+											<span class="stext-105 cl3" style="font-family: Arial, sans-serif;">₹ </span>{{ product.discounted_price|intcomma }}
+												<span class="stext-105 cl3" style="text-decoration: line-through; color: grey; margin-left: 4px; font-family: Arial, sans-serif;">
+													₹{{ product.original_price|intcomma }}
+												</span>
+											{% else %}
+												<span class="stext-105 cl3" style="font-family: Arial, sans-serif;">MRP <span style="font-family: Arial, sans-serif;">₹</span>{{ product.original_price|intcomma }}</span>
+											{% endif %}
+										
+											{% if product.sku.discount_rate != 0 %}
+												<span style="color: #388e3c; margin-left: 10px;">
+													({{ product.sku.discount_rate }}% off)
+												</span>
+											{% endif %}
+										</span>
+                                    </div>
+                                    <div class="block2-txt-child2 flex-r p-t-3">
+										<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 {% if product.id in wishlist_items %} js-addedwish-b2 {% endif %}" data-product-id="{{ product.id }}">
+											<img class="icon-heart1 dis-block trans-04"
+												src="{% static 'products/images/icons/icon-heart-01.png' %}" alt="ICON">
+											<img class="icon-heart2 dis-block trans-04 ab-t-l"
+												src="{% static 'products/images/icons/icon-heart-02.png' %}" alt="ICON">
+										</a>
+									</div>
+									<div id="stock-message">
+										{% if product.sku.stock > 0 %}
+											{% if product.sku.stock <= 3 %}
+												<div class="stock-warning d-flex justify-content-center">
+													Only a few left!
+												</div>
+											{% endif %}
+										{% else %}
+											<div class="out-of-stock">
+												Currently unavailable
+											</div>
+										{% endif %}
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if page_obj.has_other_pages %}
+                <div class="flex-c-m flex-w w-full">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">&laquo;</a>
+                                </li>
+                            {% endif %}
+                    
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <li class="page-item active">
+                                        <a class="page-link">{{ i }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                    
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}page={{ page_obj.next_page_number }}">&raquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link">&raquo;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>                    
+                </div>
+                {% endif %}	
+				{% else %}
+				<div class="flex-c-m flex-w w-full p-t-25 p-t-70">
+					<div style="text-transform: Capitalize" class="flex-c-m stext-101 cl5 ">
+						Sorry, no products match your search
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	
+	{% endblock %}
+
+	{% block script %}
+
+	<script>
+		function selectOption(radio) {
+			const name = radio.name;
+			const labels = document.querySelectorAll(`input[name="${name}"]`).forEach((input) => {
+				input.parentElement.classList.remove('selected');
+			});
+		
+			radio.parentElement.classList.add('selected');
+		}
+
+		document.querySelector('.btn-cancel-filter').addEventListener('click', function () {
+			document.querySelectorAll('.selected').forEach((element) => {
+				element.classList.remove('selected');
+			});
+		});
+	</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const filterLinks = document.querySelectorAll('.filter-link');
+			
+			filterLinks.forEach(link => {
+				link.addEventListener('click', (e) => {
+					e.preventDefault();
+					
+					const filterType = link.getAttribute('data-filter');
+					const filterValue = link.getAttribute('data-value');
+					
+					// Update form fields
+					const form = document.getElementById('filter-form');
+					const existingInput = form.querySelector(`input[name="${filterType}"]`);
+					
+					if (existingInput) {
+						existingInput.value = filterValue;
+					} else {
+						const newInput = document.createElement('input');
+						newInput.type = 'hidden';
+						newInput.name = filterType;
+						newInput.value = filterValue;
+						form.appendChild(newInput);
+					}
+					
+					// Highlight selected filter
+					filterLinks.forEach(link => link.classList.remove('filter-link-active'));
+					link.classList.add('filter-link-active');
+				});
+			});
+		});
+		
+	</script>
+
+	<script>
+
+		$('.js-addwish-b2').on('click', function (e) {
+			e.preventDefault();
+		});
+
+		function updateWishlistCount(count) {
+			const notifyElement = document.querySelector('.icon-header-noti');
+			notifyElement.setAttribute('data-notify', count);
+		}
+	
+		// Get CSRF token
+		function getCookie(name) {
+			let cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				const cookies = document.cookie.split(';');
+				for (let i = 0; i < cookies.length; i++) {
+					const cookie = cookies[i].trim();
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+	
+		const csrftoken = getCookie('csrftoken');
+	
+		// Handle adding to wishlist
+		document.querySelectorAll('.js-addwish-b2').forEach(button => {
+			button.addEventListener('click', function(e) {
+				e.preventDefault();
+	
+				const productId = this.getAttribute('data-product-id');
+				const url = '/add_to_wishlist/';
+				fetch(url, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': csrftoken,
+					},
+					body: JSON.stringify({
+						product_id: productId
+					})
+				})
+				.then(response => {
+					return response.json();
+				})
+				.then(data => {
+					if (data.status === 'success') {
+						window.location.reload();
+					} else if (data.status === 'removed') {
+						window.location.reload();
+					} else {
+						swal("Error", data.message, "error");
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+			});
+		});
+	
+	</script>
+
+</body>
+</html>
+
+{% endblock %}

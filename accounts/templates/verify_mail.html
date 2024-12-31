@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coza Store</title>
+    <link rel="icon" type="image/png" href="{% static 'products/images/icons/favicon.png' %}" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .container img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .container h1 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .container p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            /* Adjusted margin */
+        }
+
+        .container a {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .container a:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Reset Your Password</h1>
+        <p>Hi there!</p>
+        <p>We received a request to reset your password for your CozaStore account. The link will expire in 10 minutes.
+        </p>
+        <p>Your security code is: <strong>{{ security_code }}</strong></p>
+        <a href="{{ verification_link }}" target="_blank">Reset Password</a>
+        <div class="footer">
+            <p>If you didn't request a password reset, please ignore this email.</p>
+            <p>Best regards,<br>The CozaStore Team</p>
+        </div>
+    </div>
+</body>
+
+</html>

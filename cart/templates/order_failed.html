@@ -1,0 +1,82 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+
+{% endblock %}
+
+{% block header %}
+
+<header class="header-v4">
+
+{% endblock %}
+
+{% block shadow1 %}
+
+<div class="wrap-menu-desktop how-shadow1">
+
+{% endblock %}
+
+{% block menu %}
+<ul class="main-menu">
+	<li>
+		<a href="/">Home</a>
+	</li>
+
+	<li>
+		<a href="{% url 'shop_view' %}">Shop</a>
+	</li>
+
+	<li class="label1" data-label1="hot">
+		<a href="{% url 'featured_view' %}">Featured</a>
+	</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+	<div class="bg0 p-t-75 p-b-75">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <!-- Failure Message -->
+                    <div class="alert alert-danger" role="alert">
+                        <h2 class="font-weight-bold text-danger">Order Failed!</h2>
+                        <p>Unfortunately, there was an issue processing your order. Please try again.</p>
+                    </div>
+    
+                    <!-- Order Issue Details -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-danger text-white">
+                            <h4>Order Issue</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Order Number:</strong> #&nbsp;{{ order_id }}</p>
+                            <p><strong>Possible Reasons:</strong></p>
+                            <ul>
+                                <li>Payment authorization failed</li>
+                                <li>Insufficient stock</li>
+                                <li>Technical error</li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <!-- Buttons -->
+                    <div class="mt-4">
+                        <a href="{% url 'payment_method_selection' order_id=order_id %}" class="btn btn-danger">Retry Payment</a>
+                        <a href="/" class="btn btn-dark">Return to Homepage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+
+</body>
+</html>
+
+{% endblock %}

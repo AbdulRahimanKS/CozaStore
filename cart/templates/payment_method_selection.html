@@ -1,0 +1,154 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	{% endblock %}
+
+	{% block header %}
+	
+	<header class="header-v4">
+	
+	{% endblock %}
+	
+	{% block shadow1 %}
+	
+	<div class="wrap-menu-desktop how-shadow1">
+	
+	{% endblock %}
+	
+	{% block menu %}
+	<ul class="main-menu">
+		<li>
+			<a href="/">Home</a>
+		</li>
+	
+		<li>
+			<a href="{% url 'shop_view' %}">Shop</a>
+		</li>
+	
+		<li class="label1" data-label1="hot">
+			<a href="{% url 'featured_view' %}">Featured</a>
+		</li>
+	</ul>
+	{% endblock %}
+	
+	{% block content %}
+
+	<div class="bg0 p-t-75 p-b-75">
+		<div class="container">
+			<div class="row">
+				<div class="container">
+					<h2 class="text-center mb-4">Select Payment Method</h2>
+					<form method="post" id="MyForm" action="{% url 'process_payment' %}">
+						{% csrf_token %}
+							<input type="hidden" name="order_id" value="{{ order_id }}">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="card mb-4 border-secondary">
+										<div class="card-header text-center">
+											<h5>Cash on Delivery (Cash/UPI)</h5>
+										</div>
+										<label for="cod" class="d-inline-flex align-items-center" style="padding:20px">
+											<input type="radio" name="payment_method_id" value="cod" id="cod" checked>
+											<span class="ml-3">Pay in cash upon delivery of your order</span>
+										</label>
+									</div>
+								</div>
+
+								{% for method in payment_methods %}
+								<div class="col-md-4">
+									<div class="card mb-4 border-secondary">
+										<div class="card-header text-center">
+											<h5>{{ method.payment_method }}</h5>
+										</div>
+										<label for="{{ method.payment_method_id }}" class="d-inline-flex align-items-center" style="padding:20px">
+											<input type="radio" name="payment_method_id" value="{{ method.payment_method_id }}" id="{{ method.payment_method_id }}">
+											<span class="ml-3">Pay using {{ method.payment_method }}</span>
+										</label>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+						
+							<input type="hidden" name="payment_method_name" id="payment_method_name" value="">
+						<div class="text-center mt-4">
+							<button type="button" id="my-button" class="btn btn-dark btn-lg">Proceed to Payment</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% endblock %}
+
+	{% block script %}
+
+	<script>
+		document.getElementById('my-button').addEventListener('click', function(event) {
+			const selectedPaymentMethod = document.querySelector('input[name="payment_method_id"]:checked').value;
+			if (selectedPaymentMethod === 'cod') {
+				document.getElementById('MyForm').submit();
+			} else {
+				event.preventDefault();
+				
+				const formID = document.getElementById('MyForm');
+				const formData = new FormData(formID);
+	
+				fetch('/cart/process_payment/', {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': '{{ csrf_token }}', 
+					},
+					body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.status == 'success') {
+						window.location.href = data.paymenturl; 
+					} else {
+						Swal.fire({
+							icon: 'error',
+							title: 'Payment Failed',
+							text: data.message || 'Please try again.',
+						});
+					}
+				})
+				.catch(error => {
+					Swal.fire({
+						icon: 'error',
+						title: 'Something went wrong',
+						text: 'Please try again later.',
+					});
+				});
+			}
+		});
+	</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const paymentRadios = document.querySelectorAll('input[name="payment_method_id"]');
+			
+			paymentRadios.forEach(function(radio) {
+				radio.addEventListener('change', function() {
+					const card = this.closest('.card');
+					const paymentMethodName = card.querySelector('h5').textContent.trim();
+		
+					document.getElementById('payment_method_name').value = paymentMethodName;
+					document.getElementById('payment_method_name').value;
+				});
+			});
+		});
+		
+	</script>
+
+
+</body>
+</html>
+
+{% endblock %}
+

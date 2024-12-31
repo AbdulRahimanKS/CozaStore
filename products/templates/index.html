@@ -1,0 +1,700 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+{% load humanize %}
+
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+
+<style>
+	#row-products {
+		position: relative;
+		height: 995px;
+		overflow: hidden;
+		transition: height 3s ease;
+	}
+	
+	#loading-spinner {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 10;
+	}
+
+	.sub-menu-m {
+		display: none;
+		position: absolute;
+		background-color: #fff;
+		border: 1px solid #ddd;
+		padding: 8px;
+		list-style: none;
+		margin: 0;
+		z-index: 1000;
+	}
+
+	.category-container:hover .sub-menu-m {
+		display: block;
+	}
+
+	.sub-menu-m li {
+		padding: 0px 12px;
+	}
+
+	.sub-menu-m li a {
+		text-decoration: none;
+		color: #333;
+	}
+
+	.sub-menu-m li a:hover {
+		color: #007bff;
+	}
+
+	.arrow-main-menu-m {
+		display: none;
+	}
+
+	.category-container:hover .arrow-main-menu-m {
+		display: block;
+	}
+
+	.ratings-summary {
+		display: flex;
+		align-items: center;
+		font-size: 16px;
+		color: #333;
+	}
+	
+	.ratings-summary h4 {
+		padding: 4px 13px;
+		background: #26a541;
+		border-radius: 20px;
+		font-size: 13px;
+		margin-right: 10px;
+		color: #fff;
+	}
+	
+	.ratings-summary p {
+		font-size: 14px;
+		color: #777;
+	}
+
+	.stock-warning {
+		color: #f1aa2b; 
+		font-weight: bold; 
+		margin-top: 10px;
+	}
+
+	.out-of-stock {
+		color: #e03838;
+		font-weight: bold;
+		margin-top: 10px;
+	}
+	
+</style>
+
+{% endblock %}
+
+{% block header %}
+
+<header>
+
+{% endblock %}
+
+{% block shadow1 %}
+
+<div class="wrap-menu-desktop">
+
+{% endblock %}
+
+{% block menu %}
+<ul class="main-menu">
+	<li class="active-menu">
+		<a href="/">Home</a>
+	</li>
+
+	<li>
+		<a href="{% url 'shop_view' %}">Shop</a>
+	</li>
+
+	<li class="label1" data-label1="hot">
+		<a href="{% url 'featured_view' %}">Featured</a>
+	</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+	<section class="section-slide">
+		<div class="wrap-slick1">
+			<div class="slick1">
+				<div class="item-slick1" style="background-image: url('{% static 'products/images/slide-01.jpg' %}');">
+					<div class="container h-full">
+						<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+							<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
+								<span class="ltext-101 cl2 respon2">
+									Women Collection 2024
+								</span>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
+								<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+									NEW SEASON
+								</h2>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
+								<a href="{% url 'search_products_categoryid' women.slug %}"
+									class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+									Shop Now
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="item-slick1" style="background-image: url('{% static 'products/images/slide-02.jpg' %}');">
+					<div class="container h-full">
+						<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+							<div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
+								<span class="ltext-101 cl2 respon2">
+									Men New-Season
+								</span>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn"
+								data-delay="800">
+								<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+									Jackets & Coats
+								</h2>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
+								<a href="{% url 'search_products_categoryid' men.slug %}"
+									class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+									Shop Now
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="item-slick1" style="background-image: url('{% static 'products/images/slide-03.jpg' %}');">
+					<div class="container h-full">
+						<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+							<div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft"
+								data-delay="0">
+								<span class="ltext-101 cl2 respon2">
+									Men Collection 2024
+								</span>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight"
+								data-delay="800">
+								<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+									New arrivals
+								</h2>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
+								<a href="{% url 'shop_view' %}"
+									class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+									Shop Now
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="sec-banner bg0 p-t-80 p-b-50">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
+					<div class="block1 wrap-pic-w">
+						<img src="{% static 'products/images/banner-01.jpg' %}" alt="IMG-BANNER">
+
+						<a href="{% url 'search_products_categoryid' women.slug %}"
+							class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+							<div class="block1-txt-child1 flex-col-l">
+								<span class="block1-name ltext-102 trans-04 p-b-8">
+									Women
+								</span>
+
+								<span class="block1-info stext-102 trans-04">
+									Trend 2024
+								</span>
+							</div>
+
+							<div class="block1-txt-child2 p-b-4 trans-05">
+								<div class="block1-link stext-101 cl0 trans-09">
+									Shop Now
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
+					<div class="block1 wrap-pic-w">
+						<img src="{% static 'products/images/banner-02.jpg' %}" alt="IMG-BANNER">
+
+						<a href="{% url 'search_products_categoryid' men.slug %}"
+							class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+							<div class="block1-txt-child1 flex-col-l">
+								<span class="block1-name ltext-102 trans-04 p-b-8">
+									Men
+								</span>
+
+								<span class="block1-info stext-102 trans-04">
+									Trend 2024
+								</span>
+							</div>
+
+							<div class="block1-txt-child2 p-b-4 trans-05">
+								<div class="block1-link stext-101 cl0 trans-09">
+									Shop Now
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
+					<div class="block1 wrap-pic-w">
+						<img src="https://media.istockphoto.com/id/2081243793/photo/generic-military-green-field-watch-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=5WxxnJk48g_iKB-d6kuH7v-KDmTvxN9m-UgeWCEXyDU=" alt="IMG-BANNER">
+
+						<a href="{% url 'shop_view' %}"
+							class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+							<div class="block1-txt-child1 flex-col-l">
+								<span class="block1-name ltext-102 trans-04 p-b-8">
+									Accessories
+								</span>
+
+								<span class="block1-info stext-102 trans-04">
+									New Trend
+								</span>
+							</div>
+
+							<div class="block1-txt-child2 p-b-4 trans-05">
+								<div class="block1-link stext-101 cl0 trans-09">
+									Shop Now
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="bg0 p-t-23 p-b-140">
+		<div class="container">
+			<div class="p-b-10">
+				<h3 class="ltext-103 cl5">
+					Product Overview
+				</h3>
+			</div>
+
+			<div class="flex-w flex-sb-m p-b-52">
+				<div class="flex-w flex-l-m filter-tope-group m-tb-10">
+					<div class="category-container">
+						<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="all">
+							All Products
+						</button>
+					</div>
+			
+					{% for category in categories %}
+					<div class="category-container">
+						<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".{{ category.name|lower }}">
+							{{ category.name }}
+						</button>
+						{% if category.subcategories.all %}
+						<ul class="sub-menu-m">
+							{% for subcategory in category.subcategories.all %}
+							<li><a href="{% url 'search_products_subcategoryid' subcategory.slug %}">{{ subcategory.name }}</a></li>
+							{% endfor %}
+						</ul>	
+						<span class="arrow-main-menu-m">
+							<i class="fa fa-angle-right" aria-hidden="true"></i>
+						</span>
+						{% endif %}
+					</div>
+					{% endfor %}
+				</div>
+
+				<div class="flex-w flex-c-m m-tb-10">
+					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+						<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+						<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+						Search
+					</div>
+				</div>
+
+				<div class="dis-none panel-search w-full p-t-10 p-b-15">
+					<form method="GET" action="{% url 'search_products' %}">
+					<div class="bor8 dis-flex p-l-15">
+						<button type="submit" class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+							<i class="zmdi zmdi-search"></i>
+						</button>
+
+						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search"
+							placeholder="Search">
+					</div>	
+					</form>
+				</div>
+			</div>
+
+			<div class="row isotope-grid" id="row-products">
+				{% for product in products|slice:":8" %}
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item {{category.name}}">
+					<div class="block2">
+						{% if product.image %}
+						<div class="block2-pic hov-img0">
+							<a href="{{ product.get_url }}" target="_blank"><img src="{{ product.image.image.url }}" alt="IMG-PRODUCT"></a>
+						</div>
+						{% endif %}
+
+						<div class="block2-txt flex-w flex-t p-t-14">
+							<div class="block2-txt-child1 flex-col-l ">
+								<p class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+									<span style="color: #121010; font-weight: 600">{{ product.brand }}</span>
+								</p>
+
+								{% if product.total_ratings > 0 %}
+									<div class="ratings-summary pt-1 pb-2">
+										<h4>{{ product.average_rating}}
+											<i class="fa fa-star"></i>
+										</h4>
+										<p>{{ product.total_ratings }} ratings and {{ product.total_reviews }} reviews</p>
+									</div>
+								{% else %}
+									<p class="pt-1 pb-2">No ratings yet</p>
+								{% endif %}
+
+								<a href="{{ product.get_url }}" target="_blank" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+									{{ product.name }}
+								</a>
+
+								
+								<span>
+									{% if product.discounted_price and product.price != product.discounted_price %}
+									<span class="stext-105 cl3" style="font-family: Arial, sans-serif;">₹ </span>{{ product.discounted_price|intcomma }}
+										<span class="stext-105 cl3" style="text-decoration: line-through; color: grey; margin-left: 4px; font-family: Arial, sans-serif;">
+											₹{{ product.price|intcomma }}
+										</span>
+									{% else %}
+										<span class="stext-105 cl3" style="font-family: Arial, sans-serif;">MRP <span style="font-family: Arial, sans-serif;">₹</span>{{ product.price|intcomma }}</span>
+									{% endif %}
+								
+									{% if product.sku.discount_rate != 0 %}
+										<span style="color: #388e3c; margin-left: 10px;">
+											({{ product.sku.discount_rate }}% off)
+										</span>
+									{% endif %}
+								</span>
+							</div>
+
+							<div class="block2-txt-child2 flex-r p-t-3">
+								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 {% if product.id in wishlist_items %} js-addedwish-b2 {% endif %}" data-product-id="{{ product.id }}">
+									<img class="icon-heart1 dis-block trans-04"
+										src="{% static 'products/images/icons/icon-heart-01.png' %}" alt="ICON">
+									<img class="icon-heart2 dis-block trans-04 ab-t-l"
+										src="{% static 'products/images/icons/icon-heart-02.png' %}" alt="ICON">
+								</a>
+							</div>
+
+							<div id="stock-message">
+							{% if product.sku.stock > 0 %}
+								{% if product.sku.stock <= 3 %}
+									<div class="stock-warning d-flex justify-content-center">
+										Only a few left!
+									</div>
+								{% endif %}
+							{% else %}
+								<div class="out-of-stock">
+									Currently unavailable
+								</div>
+							{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			
+			<div class="flex-c-m flex-w w-full p-t-45">
+				<a href="{% url 'shop_view' %}" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+					View More
+				</a>
+			</div>
+
+		</div>
+
+	</section>
+
+	{% endblock %}
+
+	{% block script %}
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const buttons = document.querySelectorAll('button[data-filter]');
+			const productContainer = document.querySelector('.isotope-grid');
+		
+			buttons.forEach(button => {
+				button.addEventListener('click', function () {
+					const category = this.getAttribute('data-filter');
+		
+					productContainer.style.height = '995px';
+		
+					fetch(`/products_by_category/${category}/`)
+						.then(response => response.json())
+						.then(data => {
+							productContainer.innerHTML = '';
+							const fragment = document.createDocumentFragment();
+							data.forEach(product => {
+								const totalReviews = product.total_reviews || 0;
+								let ratingHTML = '';
+								if (product.total_ratings > 0) {
+									ratingHTML = `
+										<div class="ratings-summary pt-1 pb-2">
+											<h4>${product.average_rating}
+												<i class="fa fa-star"></i>
+											</h4>
+											<p>${product.total_ratings} ratings and ${totalReviews} reviews</p>
+										</div>`;
+								} else {
+									ratingHTML = `<p class="pt-1 pb-2">No ratings yet</p>`;
+								}
+
+								let stockMessage = '';
+								if (product.stock > 0) {
+									if (product.stock <= 3) {
+										stockMessage = `<div class="stock-warning d-flex justify-content-center">Only a few left!</div>`;
+									}
+								} else {
+									stockMessage = `<div class="out-of-stock">Currently unavailable</div>`;
+								}
+
+								let wishlistClass = product.in_wishlist ? 'js-addedwish-b2' : '';
+
+								const productHTML = `
+									<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${category}">
+									<div class="block2">
+										${product.image ? `
+										<div class="block2-pic hov-img0">
+											<a href="${product.get_url}" target="_blank">
+												<img src="${product.image}" alt="IMG-PRODUCT">
+											</a>
+										</div>` : ''}
+										<div class="block2-txt flex-w flex-t p-t-14">
+											<div class="block2-txt-child1 flex-col-l">
+												<p class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+													<span style="color: #121010; font-weight: 600">${product.brand}</span>
+												</p>
+												${ratingHTML}
+												<a href="${product.get_url}" target="_blank" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+													${product.name}
+												</a>
+												<span>
+													<span class="stext-105 cl3" style="font-family: Arial, sans-serif;">
+														${product.discounted_price && product.discounted_price != product.sku_price 
+															? `₹${product.discounted_price}` 
+															: `MRP ₹${product.sku_price}`}
+													</span>
+													
+													${product.discounted_price && product.discounted_price != product.sku_price ? `
+													<span class="stext-105 cl3" style="text-decoration: line-through; color: grey; margin-left: 4px; font-family: Arial, sans-serif;">
+														₹${product.sku_price}
+													</span>` : ''}
+
+													${product.sku_discount_rate != 0 ? `
+													<span style="color: #388e3c; margin-left: 10px;">
+														(${product.sku_discount_rate}% off)
+													</span>` : ''}
+												</span>
+											</div>
+
+											<div class="block2-txt-child2 flex-r p-t-3">
+												<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 ${wishlistClass}" data-product-id="${product.id}">
+													<img class="icon-heart1 dis-block trans-04"
+														src="/static/products/images/icons/icon-heart-01.png" alt="ICON">
+													<img class="icon-heart2 dis-block trans-04 ab-t-l"
+														src="/static/products/images/icons/icon-heart-02.png" alt="ICON">
+												</a>
+											</div>
+
+											<div id="stock-message">
+                                            	${stockMessage}
+                                        	</div>
+                                    	</div>
+                                	</div>
+
+								</div>`;
+								productContainer.insertAdjacentHTML('beforeend', productHTML);
+								document.getElementById('row-products').style.height = 'auto';
+							});
+						})
+						.catch(error => console.error('Error fetching products:', error));
+				});
+			});
+		});
+		
+	</script>
+
+	<script>
+
+	// Get CSRF token
+	function getCookie(name) {
+		let cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			const cookies = document.cookie.split(';');
+			for (let i = 0; i < cookies.length; i++) {
+				const cookie = cookies[i].trim();
+				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
+	const csrftoken = getCookie('csrftoken');
+
+	function updateWishlistCount(count) {
+		const notifyElement = document.querySelector('.icon-header-noti');
+    	notifyElement.setAttribute('data-notify', count);
+	}
+
+	// Handle adding to wishlist
+	document.querySelector('.isotope-grid').addEventListener('click', function(e) {
+		const button = e.target.closest('.js-addwish-b2');
+		if (button) {
+			e.preventDefault();
+	
+			const productId = button.getAttribute('data-product-id');
+			const url = '/add_to_wishlist/';
+	
+			fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrftoken,
+				},
+				body: JSON.stringify({
+					product_id: productId
+				})
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(data => {
+				if (data.status === 'success') {
+					window.location.reload();
+				} else if (data.status === 'removed') {
+					window.location.reload();
+				} else {
+					swal("Error", data.message, "error");
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+		}
+	});
+
+	</script>
+
+	<script>
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCu4u-B2epQV_EI3ydVh2xJR2EqcI3ExMM",
+            authDomain: "cozastore-project-7a992.firebaseapp.com",
+            projectId: "cozastore-project-7a992",
+            storageBucket: "cozastore-project-7a992.appspot.com",
+            messagingSenderId: "687617207315",
+            appId: "1:687617207315:web:b10aff8c6b5b0e124fa3e6",
+            measurementId: "G-QBQDVC2W6G"
+        };
+
+		// Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+
+		const saveToken = (token) => {
+			fetch('/save_fcm_token/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrftoken
+				},
+				body: JSON.stringify({ token: token })
+			})
+			.then(response => response.json())
+			.catch(error => console.error("Error saving token:", error));
+		};
+
+		const subscribeToTopic = (token, topic) => {
+			fetch(`/subscribe_to_topic/`, {  
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrftoken
+				},
+				body: JSON.stringify({ token: token, topic: topic })
+			})
+			.then(response => response.json())
+			.catch(error => console.error("Error subscribing to topic:", error));
+		};
+
+		const isLoggedIn = {{ is_logged_in|yesno:"true,false" }};
+
+		if ('serviceWorker' in navigator && isLoggedIn) {
+			navigator.serviceWorker.register('/static/firebase-messaging-sw.js')
+				.then((registration) => {
+					return messaging.requestPermission()
+						.then(() => {
+							return messaging.getToken({ 
+								vapidKey: 'BAZ2lrfxtKi9R-ULo9etNUciTCODa4WCPslIhjafOU2G-JHzp52nGX_oGOfJROYfn11kHX2lpmo4Gq3u8-j02qY',
+								serviceWorkerRegistration: registration  
+							});
+						});
+				})
+				.then((token) => {
+					saveToken(token);
+					subscribeToTopic(token, 'new_products');
+				})
+				.catch((error) => {
+					console.log("Error getting permission or token:", error);
+				});
+		}
+
+		// Handle token refresh
+		messaging.onTokenRefresh(() => {
+			messaging.getToken({
+				vapidKey: 'BAZ2lrfxtKi9R-ULo9etNUciTCODa4WCPslIhjafOU2G-JHzp52nGX_oGOfJROYfn11kHX2lpmo4Gq3u8-j02qY'
+			}).then((newToken) => {
+				saveToken(newToken);
+				subscribeToTopic(token, 'new_products');
+			}).catch((error) => {
+				console.error("Unable to retrieve new token:", error);
+			});
+		});
+	
+		// Handle incoming messages
+		messaging.onMessage((payload) => {
+		});
+	</script>	
+	
+</body>
+
+</html>
+
+{% endblock %}

@@ -1,0 +1,339 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+{% load custom_tags %}
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+	<style>
+
+		.ratings-summary {
+			display: flex;
+			align-items: center;
+			font-size: 16px;
+			color: #333;
+		}
+		
+		.ratings-summary h4 {
+			padding: 4px 13px;
+			background: #26a541;
+			border-radius: 20px;
+			font-size: 18px;
+			color: #fff;
+		}
+		
+		.ratings-summary p {
+			font-size: 14px;
+			color: #777;
+		}
+
+        .ratings-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .average-rating {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .average-rating h1 {
+            margin: 0;
+        }
+        
+        .average-rating i {
+            font-size: 24px;
+            margin-left: 5px;
+        }
+        
+        .review-summary {
+            color: #666;
+        }
+        
+        .rating-row {
+            display: flex;
+            align-items: center;
+        }
+        
+        .rating-label {
+            font-size: 14px;
+            color: #333;
+            margin-right: 10px;
+        }
+        
+        .rating-bar {
+            flex: 1;
+            background-color: #e0e0e0;
+            height: 5px;
+            border-radius: 4px;
+            position: relative;
+            margin-right: 10px;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .rating-progress {
+			height: 100%;
+			border-radius: 4px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			transition: width 0.3s ease;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+		}
+
+		.ratings-content {
+			border-right: 1px solid #f0f0f0;
+			margin-left: 60px
+		}
+		
+		.rating-progress.green {
+			background-color: #388e3c;
+		}
+		
+		.rating-progress.orange {
+			background-color: #ff9800;
+		}
+		
+		.rating-progress.red {
+			background-color: #ff6161;
+		}
+        
+        .rating-count {
+            font-size: 14px;
+            color: #666;
+            width: 60px;
+        }   
+		
+		.pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .pagination .page-item {
+            margin: 0 2px;
+        }
+        .pagination .page-link {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination .page-link:hover {
+			background-color: #f0f0f0;
+		}
+		.pagination .page-item.active .page-link {
+			background-color: #b2b2b2;
+			color: #fff;
+			border-color: #b2b2b2;
+		}
+		.pagination .page-item.disabled .page-link {
+			color: #ccc;
+			pointer-events: none;
+		}
+
+		.btn-secondary {
+			background-color: #fff;
+			color: #212121;
+			border: 1px solid #6666;
+		}
+		
+		.btn-secondary:hover {
+			background-color: #f8f9fa;
+			color: #212121;
+			border: 1px solid #6666;
+		}
+
+		.btn-secondary.active, .show>.btn-secondary.dropdown-toggle {
+			background-color: #ffff;
+		}
+		
+		.dropdown-item.active {
+			background-color: #6666; 
+			color: #212529; 
+			font-weight: bold; 
+		}
+		
+		.dropdown-item:hover {
+			background-color: #f8f9fa;
+			color: #212529;
+		}
+
+	</style>
+
+	{% endblock %}
+
+	{% block header %}
+	
+	<header class="header-v4">
+	
+	{% endblock %}
+	
+	{% block shadow1 %}
+	
+	<div class="wrap-menu-desktop how-shadow1">
+	
+	{% endblock %}
+	
+	{% block menu %}
+	<ul class="main-menu">
+		<li>
+			<a href="/">Home</a>
+		</li>
+	
+		<li>
+			<a href="{% url 'shop_view' %}">Shop</a>
+		</li>
+	
+		<li class="label1" data-label1="hot">
+			<a href="{% url 'featured_view' %}">Featured</a>
+		</li>
+	</ul>
+	{% endblock %}
+	
+	{% block content %}
+
+	<section class="sec-product-detail bg0 p-t-65 p-b-60">
+		<div class="container" style="max-width:900px">
+			<div class="row">
+                <div class="col-md-12">
+
+                    <div class="ratings-summary pb-5 d-flex justify-content-center">
+                        {% if average_rating and total_ratings %}
+                            <div class="ratings-content px-3 py-2 text-center">
+                                <div class="ratings-header mb-2 d-flex justify-content-center">
+									<div class="average_rating_box">
+										{% if average_rating and total_ratings %}
+											<h4>{{ average_rating }}
+												<i class="fa fa-star"></i>
+											</h4>
+										{% endif %}
+									</div>
+                                </div>
+                                <div class="review-summary">
+                                    <div>{{ total_ratings }} ratings &</div>
+                                    <div>{{ total_reviews }} reviews</div>
+                                </div>
+                            </div>
+
+                            <div class="rating-breakdown" style="padding-left: 16px">
+                                {% for i in star_range %}
+                                    <div class="rating-row">
+                                        <div class="rating-label">{{ i }} <i class="fa fa-star"></i></div>
+                                        <div class="rating-bar">
+											<div class="rating-progress {% if i == 5 or i == 4 or i == 3 %}green{% elif i == 2 %}orange{% elif i == 1 %}red{% endif %}" 
+												 style="width: {{ ratings_data|dict_get:i|dict_get:'percentage' }}%;"></div>
+										</div>
+                                        <div class="rating-count">{{ ratings_data|dict_get:i|dict_get:'count' }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>                                             
+                        {% endif %}
+                    </div> 
+					
+					<div class="dropdown d-flex justify-content-end pb-5">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% if request.GET.sort == 'positive_first' %}
+								Positive First
+							{% elif request.GET.sort == 'negative_first' %}
+								Negative First
+							{% else %}
+								Most Recent
+							{% endif %}
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item {% if not request.GET.sort or request.GET.sort == 'most_recent' %}active{% endif %}" href="?sort=most_recent">Most Recent</a>
+							<a class="dropdown-item {% if request.GET.sort == 'positive_first' %}active{% endif %}" href="?sort=positive_first">Positive First</a>
+							<a class="dropdown-item {% if request.GET.sort == 'negative_first' %}active{% endif %}" href="?sort=negative_first">Negative First</a>
+						</div>
+					</div>
+                    
+                    <!-- Review -->	
+                    {% for review in reviews %}
+                    <div class="flex-w flex-t">
+                        <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6" style="height:50px; width:50px; display: flex; justify-content: center; align-items: center;">
+                            {% if review.user.userprofile.profile_image %}
+                                <img src="{{ review.user.userprofile.profile_image.url }}" style="height:110%; object-fit: fill;" alt="AVATAR"> 
+                            {% else %}
+                                <img src="{% static 'shop_admin/img/no_profile_img.png' %}" style="height:110%; object-fit: fill;" alt="Default Avatar"> 
+                            {% endif %}
+                        </div>
+                        <div class="size-207">
+                            <div class="flex-w flex-sb-m p-b-8">
+                                <span class="mtext-107 cl2 p-r-20">
+                                    {{ review.review }}
+                                </span>
+                                <span class="fs-18 cl11">
+                                    {% for i in 5|times %}
+                                        {% if i <= review.rating %}
+                                            <i class="zmdi zmdi-star"></i>
+                                        {% else %}
+                                            <i class="zmdi zmdi-star-outline"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>																																				
+                            </div>
+                            <p class="stext-102 cl6" style="font-size: 12px">{{ review.user.first_name }} {{ review.user.surname }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    {% endfor %}
+
+					{% if page_obj.has_other_pages %}
+					<div class="flex-c-m flex-w w-full">
+						<nav aria-label="Page navigation example">
+							<ul class="pagination justify-content-center">
+								{% if page_obj.has_previous %}
+									<li class="page-item">
+										<a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo;</a>
+									</li>
+								{% else %}
+									<li class="page-item disabled">
+										<a class="page-link">&laquo;</a>
+									</li>
+								{% endif %}
+								
+								{% for i in page_obj.paginator.page_range %}
+									{% if page_obj.number == i %}
+										<li class="page-item active">
+											<a class="page-link">{{ i }}</a>
+										</li>
+									{% else %}
+										<li class="page-item">
+											<a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ i }}">{{ i }}</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+								
+								{% if page_obj.has_next %}
+									<li class="page-item">
+										<a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">&raquo;</a>
+									</li>
+								{% else %}
+									<li class="page-item disabled">
+										<a class="page-link">&raquo;</a>
+									</li>
+								{% endif %}
+							</ul>
+						</nav>
+					</div>
+					{% endif %}
+
+                </div>
+			</div>
+		</div>
+	</section>
+		
+	{% endblock %}
+
+	{% block script %}
+
+	{% endblock %}
+

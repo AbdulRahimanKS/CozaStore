@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+
+<style>
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+</style>
+
+{% endblock %}
+
+{% block extra_nav_items %}
+
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-heading">MAIN MENU</li>
+    
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'dashboard' %}">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+    
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'profile_view' %}">
+            <i class='bx bxs-user'></i>
+            <span>Profile</span>
+          </a>
+        </li>
+    
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'list_orders' %}">
+            <i class="bi bi-cart3"></i>
+            <span>Order</span>
+          </a>
+        </li>
+    
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'list_pincode' %}">
+            <i class='bx bxs-key'></i>
+            <span>Pin code</span>
+          </a>
+        </li>
+    
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'list_coupon' %}" class="active">
+            <i class='bx bxs-coupon bx-rotate-90' ></i>
+            <span>Coupon</span>
+          </a>
+        </li>
+    
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+              <i class='bx bxl-product-hunt'></i><span>Product</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+              <li>
+                  <a href="{% url 'list_category' %}">
+                      <i class="bi bi-circle"></i><span>Category</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_product' %}">
+                      <i class="bi bi-circle"></i><span>Product</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_variation' %}">
+                      <i class="bi bi-circle"></i><span>Variation</span>
+                  </a>
+              </li>
+              <li>
+                <a href="{% url 'list_attribute' %}">
+                    <i class="bi bi-circle"></i><span>Attribute</span>
+                </a>
+              </li>
+          </ul>
+        </li>
+    
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{% url 'logout' %}">
+            <i class='bx bxs-log-out' ></i>
+            <span>Sign Out</span>
+          </a>
+        </li>
+    
+      </ul>
+
+</aside>
+
+{% endblock %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Add Coupon</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'list_coupon' %}">List Coupons</a></li>
+                <li class="breadcrumb-item active">Add Coupon</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="content">
+        
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <a href="{% url 'list_coupon' %}" class="btn btn-secondary" style="padding: 0.3rem 0.5rem; background: #4154f1; color: #fff;">List Coupons</a>
+        </div>
+
+        <div class="card" style=" margin-top: 30px;">
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3 pt-4">
+                        <label for="{{ form.code.id_for_label }}" class="form-label">Coupon Code <span class="text-danger">*</span></label>
+                        {{ form.code }}
+                        {% if form.code.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.code.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.discount_type.id_for_label }}" class="form-label">Discount type <span class="text-danger">*</span></label>
+                        {{ form.discount_type }}
+                        {% if form.discount_type.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.discount_type.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.discount_value.id_for_label }}" class="form-label">Discount value <span class="text-danger">*</span></label>
+                        {{ form.discount_value }}
+                        {% if form.discount_value.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.discount_value.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.minimum_cart_value.id_for_label }}" class="form-label">Minimum cart value</label>
+                        {{ form.minimum_cart_value }}
+                        {% if form.minimum_cart_value.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.minimum_cart_value.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.valid_from.id_for_label }}" class="form-label">Valid from</label>
+                        {{ form.valid_from }}
+                        {% if form.valid_from.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.valid_from.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.valid_to.id_for_label }}" class="form-label">Valid to</label>
+                        {{ form.valid_to }}
+                        {% if form.valid_to.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.valid_to.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.products.id_for_label }}" class="form-label">Select product</label>
+                        {{ form.products }}
+                        {% if form.products.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.products.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.description.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.is_first_time_user.id_for_label }}" class="form-label">Is first time user</label>
+                        {{ form.is_first_time_user }}
+                        {% if form.is_first_time_user.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.is_first_time_user.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.is_active.id_for_label }}" class="form-label">Is Active</label>
+                        {{ form.is_active }}
+                        {% if form.is_active.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.is_active.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary me-2">Save</button>
+                        <a href="{% url 'list_coupon' %}" class="btn btn-secondary">Back</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+  <div class="toast-container">
+      {% if messages %}
+          {% for message in messages %}
+          <div class="toast align-items-center text-white bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                  <div class="toast-body">
+                      {{ message }}
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+          </div>
+          {% endfor %}
+      {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+      var toastList = toastElList.map(function (toastEl) {
+          return new bootstrap.Toast(toastEl, { delay: 3000 });
+      });
+      toastList.forEach(toast => toast.show());
+  });
+</script>
+
+{% endblock %}
+

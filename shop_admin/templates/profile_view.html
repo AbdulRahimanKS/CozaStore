@@ -1,0 +1,555 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+
+<style>
+
+  .profile-image-preview {
+    position: relative;
+    width: 100px; 
+    height: 100px;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+  
+  .profile-image-preview img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .btn {
+    margin-top: 10px;
+    display: block;
+  }
+  
+  #upload_image_btn, #delete_image_btn {
+    margin-right: 10px;
+  }
+
+  .buttondiv {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-sm {
+      width: fit-content;
+      padding: 5px 10px;
+  }
+
+  .toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+</style>
+
+{% endblock %}
+
+{% block extra_nav_items %}
+
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+    <li class="nav-heading">MAIN MENU</li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'dashboard' %}">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'profile_view' %}" class="active">
+        <i class='bx bxs-user'></i>
+        <span>Profile</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'list_orders' %}">
+        <i class="bi bi-cart3"></i>
+        <span>Order</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'list_pincode' %}">
+        <i class='bx bxs-key'></i>
+        <span>Pin code</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'list_coupon' %}">
+        <i class='bx bxs-coupon bx-rotate-90' ></i>
+        <span>Coupon</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+          <i class='bx bxl-product-hunt'></i><span>Product</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+              <a href="{% url 'list_category' %}">
+                  <i class="bi bi-circle"></i><span>Category</span>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'list_product' %}">
+                  <i class="bi bi-circle"></i><span>Product</span>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'list_variation' %}">
+                  <i class="bi bi-circle"></i><span>Variation</span>
+              </a>
+          </li>
+          <li>
+            <a href="{% url 'list_attribute' %}">
+                <i class="bi bi-circle"></i><span>Attribute</span>
+            </a>
+          </li>
+      </ul>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'logout' %}">
+        <i class='bx bxs-log-out' ></i>
+        <span>Sign Out</span>
+      </a>
+    </li>
+
+  </ul>
+
+</aside>
+
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Profile</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">Profile</li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section profile">
+      <div class="row">
+        <div class="col-xl-4">
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              {% if user_profile.profile_image %}
+              <img src="{{ user_profile.profile_image.url }}" alt="Profile" class="rounded-circle">
+              {% else %}
+              <img src="{% static 'shop_admin/img/no_profile_img.png' %}" alt="Profile" class="rounded-circle">
+              {% endif %}
+              <h2>{{ user.first_name }} {{ user.surname }}</h2>
+              <h3>{{ user_profile.job_title }}</h3>
+              <div class="social-links mt-2">
+                {% if user_profile.Facebook %}
+                <a href="{{ user_profile.Facebook }}" target=_blank class="facebook"><i class="bi bi-facebook"></i></a>
+                {% endif %}
+                {% if user_profile.Instagram %}
+                <a href="{{ user_profile.Instagram }}" target=_blank class="instagram"><i class="bi bi-instagram"></i></a>
+                {% endif %}
+                {% if user_profile.LinkedIn %}
+                <a href="{{ user_profile.LinkedIn }}" target=_blank class="linkedin"><i class="bi bi-linkedin"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-8">
+          <div class="card">
+            <div class="card-body pt-3">
+              
+              <ul class="nav nav-tabs nav-tabs-bordered">
+                <li class="nav-item">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                </li>
+              </ul>
+
+              <div class="tab-content pt-2">
+                <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                  <h5 class="card-title">About</h5>
+                  <p class="small fst-italic">{{ user_profile.about|default:"No bio available" }}</p>
+                  <h5 class="card-title">Profile Details</h5>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label ">First Name</div>
+                    <div class="col-lg-9 col-md-8">{{ user.first_name }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label ">Surname</div>
+                    {% if user.surname %}
+                      <div class="col-lg-9 col-md-8">{{ user.surname }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Email</div>
+                    <div class="col-lg-9 col-md-8">{{ user.email }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Company</div>
+                    {% if user_profile.company %}
+                      <div class="col-lg-9 col-md-8">{{ user_profile.company }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Job</div>
+                    {% if user_profile.job_title %}
+                      <div class="col-lg-9 col-md-8">{{ user_profile.job_title }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Address</div>
+                    {% if user_profile.address %}
+                      <div class="col-lg-9 col-md-8">{{ user_profile.address }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">City</div>
+                    {% if user_profile.city %} 
+                      <div class="col-lg-9 col-md-8">{{ user_profile.city }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Country</div>
+                    <div class="col-lg-9 col-md-8">{{ user.country }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Country Code</div>
+                    <div class="col-lg-9 col-md-8">{{ user.countryCode }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Mobile</div>
+                    <div class="col-lg-9 col-md-8">{{ user.mobile }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">LinkedIn</div>
+                    {% if user_profile.LinkedIn %}
+                      <div class="col-lg-9 col-md-8">{{ user_profile.LinkedIn }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Facebook</div>
+                    {% if user_profile.Facebook %}
+                      <div class="col-lg-9 col-md-8">{{ user_profile.Facebook }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Instagram</div>
+                    {% if user_profile.Instagram %}
+                      <div class="col-lg-9 col-md-8">{{ user_profile.Instagram }}</div>
+                    {% else %}
+                      <div class="col-lg-9 col-md-8">-</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                  <form method="post" enctype="multipart/form-data" action="{% url 'profile_view' %}">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="profile_image">Profile Image</label>
+                      </div>
+                      <div class="col-md-9">
+                        <div class="profile-image-preview mb-2">
+                            {% if user_profile and user_profile.profile_image %}
+                            <img src="{{ user_profile.profile_image.url }}" alt="Profile Image" id="profile_image_preview" class="img-fluid">
+                            {% else %}
+                            <img src="{% static 'shop_admin/img/no_profile_img.png' %}" alt="Profile Image" id="profile_image_preview" class="img-fluid">
+                            {% endif %}
+                        </div>
+                        <input type="file" id="profile_image" name="profile_image" class="d-none">
+                        <input type="hidden" id="remove_image" name="remove_image" value="false">
+                        <div class="buttondiv pt-2">
+                          <a href="#" id="upload_btn" class="btn btn-primary btn-sm me-2" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                          <a href="#" id="remove_btn" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="bio">About</label>
+                      </div>
+                      <div class="col-md-9">
+                        <textarea id="about" name="about" class="form-control">{{ user_profile.about }}</textarea>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="first_name">First Name</label>
+                      </div>
+                      <div class="col-md-9">
+                        {{ form.first_name }}
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="surname">Surname</label>
+                      </div>
+                      <div class="col-md-9">
+                        {{ form.surname }}
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="email">Email</label>
+                      </div>
+                      <div class="col-md-9">
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.email.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="company">Company</label>
+                      </div>
+                      <div class="col-md-9">
+                        <input style="background: #f6f6f6" type="text" id="company" name="company" class="form-control" value="Coza Store" readonly>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="job_title">Job</label>
+                      </div>
+                      <div class="col-md-9">
+                        <input type="text" id="job" name="job_title" class="form-control" value="{{ user_profile.job_title }}">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="address">Address</label>
+                      </div>
+                      <div class="col-md-9">
+                        <input type="text" id="address" name="address" class="form-control" value="{{ user_profile.address }}">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="address">City</label>
+                      </div>
+                      <div class="col-md-9">
+                        <input type="text" id="city" name="city" class="form-control" value="{{ user_profile.city }}">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="country">Country</label>
+                      </div>
+                      <div class="col-md-9">
+                        <select name="country" id="{{ form.country.id_for_label }}" class="form-select" required>
+                            {% for option in form.country.field.widget.choices %}
+                                <option value="{{ option.0 }}" {% if option.0 == form.country.value %}selected{% endif %}>{{ option.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.country.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.country.errors %}
+                            <p style="margin-left: 8px;">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>                    
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="countryCode">Country Code</label>
+                      </div>
+                      <div class="col-md-9">
+                        <input type="text" style="background: #f6f6f6" id="countryCode" name="countryCode" class="form-control" value="{{ user.countryCode }}" readonly>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="mobile">Mobile</label>
+                      </div>
+                      <div class="col-md-9">
+                        {{ form.mobile }}
+                        {% if form.mobile.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.mobile.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="mobile">LinkedIn</label>
+                      </div>
+                      <div class="col-md-9">
+                        <input type="text" id="linkedin" name="LinkedIn" class="form-control" value="{{ user_profile.LinkedIn }}">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="mobile">Facebook</label>
+                      </div>
+                      <div class="col-md-9">
+                        <input type="text" id="facebook" name="Facebook" class="form-control" value="{{ user_profile.Facebook }}">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label for="mobile">Instagram</label>
+                      </div>  
+                      <div class="col-md-9">
+                        <input type="text" id="instagram" name="Instagram" class="form-control" value="{{ user_profile.Instagram }}">
+                      </div>
+                    </div>
+
+                    <div class="text-center d-flex justify-content-center">
+                      <button type="submit" name="profile_update" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="tab-pane fade pt-3" id="profile-change-password">
+                  <form method="POST" action="{% url 'profile_view' %}">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label>Current Password</label>
+                      </div>
+                      <div class="col-md-9">
+                        {{ ChangePasswordForm.current_password }}
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label>New Password</label>
+                      </div>
+                      <div class="col-md-9">
+                        {{ ChangePasswordForm.new_password }} 
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-md-3">
+                        <label>Confirm Password</label>
+                      </div>
+                      <div class="col-md-9">
+                        {{ ChangePasswordForm.confirm_password }}
+                      </div>
+                    </div>
+
+                    <div class="text-center d-flex justify-content-center">
+                      <button type="submit" name="change_password" class="btn btn-primary">Save Changes</button>
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+  <div class="toast-container">
+      {% if messages %}
+          {% for message in messages %}
+              <div class="toast align-items-center text-white {% if 'error' in message.tags %}bg-danger{% else %}bg-success{% endif %}" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div class="d-flex">
+                      <div class="toast-body">
+                          {{ message }}
+                      </div>
+                      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+              </div>
+          {% endfor %}
+      {% endif %}
+  </div>
+</div>
+
+<script>
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    var toastList = toastElList.map(function (toastEl) {
+        return new bootstrap.Toast(toastEl, { delay: 3000 });
+    });
+    toastList.forEach(toast => toast.show());
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("upload_btn").addEventListener("click", function(event) {
+        event.preventDefault();
+        document.getElementById("profile_image").click();
+    });
+
+    document.getElementById("remove_btn").addEventListener("click", function(event) {
+        event.preventDefault();
+        if (confirm("Are you sure you want to remove the profile image?")) {
+            document.getElementById("profile_image_preview").src = "{% static 'shop_admin/img/no_profile_img.png' %}";
+            document.getElementById("remove_image").value = 'true';
+            document.getElementById("profile_form").submit();
+        }
+    });
+
+    document.getElementById("profile_image").addEventListener("change", function(event) {
+        if (event.target.files.length > 0) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("profile_image_preview").src = e.target.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    });
+
+});
+
+</script>
+
+<script src="{% static 'shop_admin/js/profileView/script.js' %}"></script>
+
+{% endblock %}

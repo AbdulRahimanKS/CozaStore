@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 1rem;
+    }
+
+    table.dataTable thead th {
+        text-align: center;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+
+</style>
+
+{% endblock %}
+
+{% block extra_nav_items %}
+
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-heading">MAIN MENU</li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'profile_view' %}">
+          <i class='bx bxs-user'></i>
+          <span>Profile</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_orders' %}">
+          <i class="bi bi-cart3"></i>
+          <span>Order</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_pincode' %}">
+          <i class='bx bxs-key'></i>
+          <span>Pin code</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'list_coupon' %}">
+          <i class='bx bxs-coupon bx-rotate-90' ></i>
+          <span>Coupon</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+          <a class="nav-link" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+              <i class='bx bxl-product-hunt'></i><span>Product</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+              <li>
+                  <a href="{% url 'list_category' %}">
+                      <i class="bi bi-circle"></i><span>Category</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_product' %}">
+                      <i class="bi bi-circle"></i><span>Product</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_variation' %}">
+                      <i class="bi bi-circle"></i><span>Variation</span>
+                  </a>
+              </li>
+              <li>
+                  <a href="{% url 'list_attribute' %}" class="active">
+                      <i class="bi bi-circle"></i><span>Attribute</span>
+                  </a>
+              </li>
+          </ul>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'logout' %}">
+          <i class='bx bxs-log-out' ></i>
+          <span>Sign Out</span>
+        </a>
+      </li>
+  
+    </ul>
+
+</aside>
+
+{% endblock %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Update Attribute</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item">Product</li>
+                <li class="breadcrumb-item"><a href="{% url 'list_attribute' %}">List Attributes</a></li>
+                <li class="breadcrumb-item active">Update Attribute</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="content">
+
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <a href="{% url 'list_attribute' %}" class="btn btn-secondary" style="padding: 0.3rem 0.5rem; background: #4154f1; color: #fff;">List Attributes</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <div class="card" style="max-width: 500px; margin-top: 10px;">
+                    <div class="card-body">
+                        <form method="POST" action="{% url 'update_attribute' pk=attribute.id %}">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3 pt-4">
+                                <label for="{{ attribute_form.name.id_for_label }}" class="form-label">Attribute Name</label>
+                                {{ attribute_form.name }}
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" name="submit_attribute" class="btn btn-primary me-2">Update</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        
+        <div class="col-md-6">
+            {% for value in attribute_values %}
+            <div class="card" style="max-width: 500px; margin-top: 10px;">
+                <div class="card-body">
+                    <form method="POST" action="{% url 'update_attribute' pk=attribute.id %}">
+                        {% csrf_token %}
+                            <input type="hidden" name="attribute_value_id" value="{{ value.id }}">
+
+                            <div class="mb-3 pt-4">
+                                <label for="variation" class="form-label">Attribute Name</label>
+                                <input type="text" style="background: #f6f6f6" id="attribute" name="attribute" class="form-control" value="{{ value.product_attribute.name }}" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="newAttributeValue" class="form-label">Enter new attribute value</label>
+                                <input type="text" id="newAttributeValue" name="new_value" class="form-control" placeholder="Enter new attribute value" value="{{ value }}" required>
+                            </div>
+
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" name="submit_attribute_value" class="btn btn-primary me-2">Update</button>
+                            <button type="submit" name="delete_attribute_value" class="btn btn-danger me-2">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>     
+    </div>
+</main>
+
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+    <div class="toast-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="toast align-items-center text-white {% if message.tags == 'success' %}bg-success{% elif message.tags == 'error' %}bg-danger{% endif %} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'shop_admin/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl, { delay: 3000 });
+        });
+        toastList.forEach(toast => toast.show());
+    });
+</script>
+
+
+{% endblock %}

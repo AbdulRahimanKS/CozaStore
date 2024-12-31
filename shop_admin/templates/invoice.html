@@ -1,0 +1,169 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice</title>
+  
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
+            background-color: #f4f6f8;
+          }
+          
+          .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+          
+          header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+          }
+          
+          .company-info {
+            font-size: 14px;
+          }
+          
+          .invoice-info {
+            text-align: right;
+            font-size: 14px;
+          }
+          
+          .client-info, .invoice-details {
+            margin-bottom: 20px;
+          }
+          
+          .client-info h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+          }
+          
+          .invoice-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+          }
+          
+          .invoice-details th,
+          .invoice-details td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+            font-size: 14px;
+          }
+          
+          .invoice-details thead th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+          }
+          
+          .invoice-details tfoot td {
+            font-weight: bold;
+          }
+          
+          .total td {
+            font-size: 16px;
+            background-color: #f4f4f4;
+          }
+          
+          footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 20px;
+          }
+          
+          .footer-note {
+            font-size: 12px;
+            color: #999;
+          }
+          
+    </style>
+
+</head>
+<body>
+  <div class="invoice-container">
+    <header>
+      <div class="company-info">
+        <h1>CozaStore</h1>
+        <p>1st Floor, Carnival Infopark. Phase 1, Infopark<br>Kochi, kerala, 682042<br>Phone: (+91) 8281180914<br>Email: cozastore@gmail.com</p>
+      </div>
+      <div class="invoice-info">
+        <h2>Invoice</h2>
+        <p>Invoice ID: {{ order.invoice_id }}<br>Date & Time: {{ order.order_time }}</p>
+      </div>
+    </header>
+
+    <section class="client-info">
+      <h3>Bill To:</h3>
+      <p>{{ order.address_name }}<br>{{ order.address_address }}<br>{{ order.address_city }}, {{ order.address_state }}, {{ order.address_pin_code }} <br> {{ order.address_mobile }}</p>
+    </section>
+
+    <section class="invoice-details">
+      <table>
+        <thead>
+          <tr>
+            <th>Item Description</th>
+            <th>Quantity</th>
+            <th>List Price</th>
+            <th>Selling Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order_item in order_items %}
+          <tr>
+            <td>{{ order_item.product_name }}</td>
+            <td>{{ order_item.quantity }}</td>
+            <td>₹ {{ order_item.product_price|intcomma }}</td>
+            <td>₹ {{ order_item.product_discounted_price|intcomma }}</td>
+            <td>₹ {{ order_item.get_cost|intcomma }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4">Subtotal</td>
+            <td>₹ {{ order.discounted_amount_without_coupon|intcomma }}</td>
+          </tr>
+          <tr>
+            <td colspan="4">Coupon discount</td>
+            <td>₹ {{ order.coupon_amount|intcomma }}</td>
+          </tr>
+          <tr>
+            <td colspan="4">Delivery charge</td>
+            <td>₹ {{ order.delivery_charge|intcomma }}</td>
+          </tr>
+          <tr class="total">
+            <td colspan="4">Total</td>
+            <td>₹ {{ order.discounted_amount|intcomma }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <footer>
+      <p>Thank you for shopping with us!</p>
+    </footer>
+  </div>
+</body>
+</html>

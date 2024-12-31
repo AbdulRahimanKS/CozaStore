@@ -1,0 +1,1493 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Coza Store</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="{% static 'products/images/icons/favicon.png' %}" />
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/bootstrap/css/bootstrap.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css"
+		href="{% static 'products/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css"
+		href="{% static 'products/fonts/iconic/css/material-design-iconic-font.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/fonts/linearicons-v1.0.0/icon-font.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/animate/animate.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/css-hamburgers/hamburgers.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/animsition/css/animsition.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/select2/select2.min.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/daterangepicker/daterangepicker.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/slick/slick.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/vendor/MagnificPopup/magnific-popup.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css"
+		href="{% static 'products/vendor/perfect-scrollbar/perfect-scrollbar.css' %}">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'products/css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'products/css/main.css' %}">
+	<!--===============================================================================================-->
+	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link href="{% static 'shop_admin/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shop_admin/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+	
+
+    <link href="{% static 'shop_admin/css/style.css' %}" rel="stylesheet">
+	<style>
+		.empty-cart .btn, .login-required .btn {
+			border: none;
+			background-color: #717fe0;
+			color: #fff;
+			border-radius: 5px;
+			text-transform: uppercase;
+			transition: background-color 0.3s; 
+		}
+		
+		.empty-cart .btn:hover, .login-required .btn:hover {
+			background-color: #525eb3;
+		}
+		.dropdown {
+			position: relative;
+			display: inline-block;
+		}
+		
+		.dropdown-menu {
+			display: none;
+			position: absolute;
+			background-color: #e6e6e6;
+			min-width: 160px;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 9999;
+			top: 100%;
+			left: 0;
+		}
+		
+		.dropdown-menu .dropdown-item {
+			color: black;
+			padding: 8px 16px;
+			text-decoration: none;
+			display: block;
+			font-size: 0.95rem;
+		}
+		
+		.dropdown-menu .dropdown-item:hover {
+			color: black;
+			background-color: #f1f1f1;
+		}
+		
+		.dropdown:hover .dropdown-menu {
+			display: block;
+		}
+				
+		a {
+			color: #4154f1;
+			text-decoration: none;
+		}
+		
+		a:hover {
+			color: #717ff5;
+			text-decoration: none;
+		}
+		
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			font-family: "Nunito", sans-serif;
+		}
+		
+		/*--------------------------------------------------------------
+		# Main
+		--------------------------------------------------------------*/
+		#main {
+			padding: 20px 30px;
+			transition: all 0.3s;
+		}
+		
+		@media (max-width: 1199px) {
+			#main {
+			padding: 20px;
+			}
+		}
+
+		@media (min-width: 1200px){
+			.logo {
+				width: auto;
+			}
+		}
+		
+		/* Card */
+		.card {
+			margin-bottom: 30px;
+			border: none;
+			border-radius: 5px;
+			box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+		}
+		
+		.card-header,
+		.card-footer {
+			border-color: #ebeef4;
+			background-color: #fff;
+			color: #798eb3;
+			padding: 15px;
+		}
+		
+		.card-title {
+			padding: 20px 0 15px 0;
+			font-size: 18px;
+			font-weight: 500;
+			color: #012970;
+			font-family: "Poppins", sans-serif;
+		}
+		
+		.card-title span {
+			color: #899bbd;
+			font-size: 14px;
+			font-weight: 400;
+		}
+		
+		.card-body {
+			padding: 0 20px 20px 20px;
+		}
+		
+		.card-img-overlay {
+			background-color: rgba(255, 255, 255, 0.6);
+		}
+		
+		/* Alerts */
+		.alert-heading {
+			font-weight: 500;
+			font-family: "Poppins", sans-serif;
+			font-size: 20px;
+		}
+		
+		/* Close Button */
+		.btn-close {
+			background-size: 25%;
+		}
+		
+		.btn-close:focus {
+			outline: 0;
+			box-shadow: none;
+		}
+		
+		/* Accordion */
+		.accordion-item {
+			border: 1px solid #ebeef4;
+		}
+		
+		.accordion-button:focus {
+			outline: 0;
+			box-shadow: none;
+		}
+		
+		.accordion-button:not(.collapsed) {
+			color: #012970;
+			background-color: #f6f9ff;
+		}
+		
+		.accordion-flush .accordion-button {
+			padding: 15px 0;
+			background: none;
+			border: 0;
+		}
+		
+		.accordion-flush .accordion-button:not(.collapsed) {
+			box-shadow: none;
+			color: #4154f1;
+		}
+		
+		.accordion-flush .accordion-body {
+			padding: 0 0 15px 0;
+			color: #3e4f6f;
+			font-size: 15px;
+		}
+
+		
+		/* Bordered Tabs */
+		.nav-tabs-bordered {
+			border-bottom: 2px solid #ebeef4;
+		}
+		
+		.nav-tabs-bordered .nav-link {
+			margin-bottom: -2px;
+			border: none;
+			color: #2c384e;
+		}
+		
+		.nav-tabs-bordered .nav-link:hover,
+		.nav-tabs-bordered .nav-link:focus {
+			color: #4154f1;
+		}
+		
+		.nav-tabs-bordered .nav-link.active {
+			background-color: #fff;
+			color: #4154f1;
+			border-bottom: 2px solid #4154f1;
+		}
+
+		.profile .profile-card img {
+			max-width: 120px;
+		}
+		
+		.profile .profile-card h2 {
+			font-size: 24px;
+			font-weight: 700;
+			color: #2c384e;
+			margin: 10px 0 0 0;
+		}
+		
+		.profile .profile-card h3 {
+			font-size: 18px;
+		}
+		
+		.profile .profile-card .social-links a {
+			font-size: 20px;
+			display: inline-block;
+			color: rgba(1, 41, 112, 0.5);
+			line-height: 0;
+			margin-right: 10px;
+			transition: 0.3s;
+		}
+		
+		.profile .profile-card .social-links a:hover {
+			color: #012970;
+		}
+		
+		.profile .profile-overview .row {
+			margin-bottom: 20px;
+			font-size: 15px;
+		}
+		
+		.profile .profile-overview .card-title {
+			color: #012970;
+		}
+		
+		.profile .profile-overview .label {
+			font-weight: 600;
+			color: rgba(1, 41, 112, 0.6);
+		}
+		
+		.profile .profile-edit label {
+			font-weight: 600;
+			color: rgba(1, 41, 112, 0.6);
+		}
+		
+		.profile .profile-edit img {
+			max-width: 120px;
+		}
+
+		.profile-image-preview {
+			position: relative;
+			width: 100px;
+			height: 100px;
+			overflow: hidden;
+			border-radius: 50%;
+		}
+
+		.profile-image-preview img {
+			width: 100%;
+			height: auto;
+			object-fit: cover;
+		}
+   
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            width: auto;
+            margin-left: 20px;
+            margin-right: 0px;
+        }
+
+        .btn-container button {
+            margin-left: 12px;
+        }
+
+        .btn-container button i {
+            margin-right: 8px;
+        }
+        
+        .btn-container button i {
+            font-size: 16px;
+        }
+
+        .btn-container .size-101 {
+            min-width: 152px;
+        }
+
+        .zmdi-favorite:before {
+            color: #666
+        }
+
+		.color-box {
+            width:40px;
+            height: 40px;
+            display: inline-block;
+            margin-right: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+        }
+
+		.size-options {
+			list-style: none;
+			padding: 0;
+			display: flex;
+			gap: 10px; 
+		}
+		
+		.size-options li {
+			position: relative;
+		}
+		
+		.size-options input[type="radio"] {
+			display: none; 
+		}
+		
+		.size-options .size-circle {
+			display: inline-block;
+			width: 50px;
+			height: 50px;
+			line-height: 50px;
+			border-radius: 50%;
+			background-color: #fff;
+			text-align: center;
+			font-size: 15px;
+			cursor: pointer;
+			border: 1px solid #ccc;
+			transition: background-color 0.3s ease;
+		}
+		
+		.size-options .size-circle:hover {
+			border: 1px solid #333;
+		}
+		
+		.size-options input[type="radio"]:checked + .size-circle {
+			border: 1px solid #333;
+			color: #333;
+		}
+		
+		.special-size-text {
+			display: inline-block;
+			padding: 10px 20px;
+			border-radius: 50px;
+			background-color: #fff;
+			border: 1px solid #ccc;
+			font-size: 15px;
+			cursor: pointer;
+			transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+		}
+		
+		.special-size-text:hover {
+			border-color: #333;
+			background-color: #f0f0f0;
+		}
+		
+		.special-size-text.selected {
+			border: 1px solid #333;
+			color: #333;
+		}
+
+		.address-style {
+			border:1px solid; 
+			font-size: 14px; 
+			color:#e0ddd5; 
+			font-weight:500; 
+			padding: 16px 0; 
+			cursor:pointer;
+		}
+
+		.toast-container {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			z-index: 2000;
+		}
+
+		.address-box {
+			background-color: #fff;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			position: relative;
+		}
+
+		.address-options {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+		}
+
+		.address-type {
+			background-color: #f0f0f0;
+			padding: 5px 10px;
+			border-radius: 5px;
+			font-size: 0.9rem;
+		}
+
+		.address-header {
+			font-size: 1.1rem;
+			color: #333;
+		}
+
+		.address-body p {
+			margin: 0;
+			font-size: 0.9rem;
+			color: #666;
+		}
+
+		.dropdown-menu {
+			min-width: 100px;
+		}
+		.address-box {
+			background-color: #fff;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			position: relative;
+		}
+
+		.address-options {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+		}
+
+		.address-type {
+			background-color: #f0f0f0;
+			padding: 5px 10px;
+			border-radius: 5px;
+			font-size: 0.9rem;
+		}
+
+		.address-header {
+			font-size: 1.1rem;
+			color: #333;
+		}
+
+		.address-body p {
+			margin: 0;
+			font-size: 0.9rem;
+			color: #666;
+		}
+
+		.dropdown-menu {
+			min-width: 100px;
+		}
+
+		.dropdown:hover .dropdown-menu {
+			display: block;
+			left: -71px;
+			top: 1px;
+		}
+
+		.dropdown-menu {
+			display: none;
+		}
+
+		.show-modal2 {
+			visibility: visible;
+			opacity: 1;
+		}
+
+        @media (max-width: 768px) {
+            #med-small {
+                margin-right: 125px;
+            }
+        }
+
+	</style>
+
+</head>
+
+<body class="animsition">
+	<header class="header-v4">
+		<div class="container-menu-desktop">
+			<div class="top-bar">
+				<div class="content-topbar flex-sb-m h-full container">
+					<div class="left-top-bar">
+						Free shipping for standard order over <span style="font-family: Arial, sans-serif;">₹</span>499
+					</div>
+
+					<div class="right-top-bar flex-w h-full">
+						{% if not request.user.is_authenticated %}
+						<div class="dropdown">
+							<a href="#" class="flex-c-m trans-04 p-lr-25 dropdown-toggle" id="dropdownMenuButton">
+								Login
+							</a>
+							<div class="dropdown-menu" id="dropdownMenu">
+								<a href="{% url 'register' %}" class="dropdown-item">New Customer? <span style="font-weight:bold; color:#333;">Sign Up</span></a>
+								<a href="{% url 'login' %}" class="dropdown-item"><i class='bx bx-log-in'></i>&nbsp;&nbsp;Login</a>
+							</div>
+						</div>
+						{% else %}
+						<div class="dropdown">
+							<a href="#" class="flex-c-m trans-04 p-lr-25 dropdown-toggle" id="dropdownMenuButton">
+								Welcome, {{ request.user.first_name }}
+							</a>
+							<div class="dropdown-menu" id="dropdownMenu">
+								<a href="{% url 'profile' %}" class="dropdown-item"><i class='bx bx-user'></i>&nbsp;&nbsp;My Profile</a>
+                                <a href="{% url 'orders_list' %}" class="dropdown-item"><i class='bx bx-package'></i>&nbsp;&nbsp;My Orders</a>
+								<a href="{% url 'logout' %}" class="dropdown-item"><i class='bx bx-log-out'></i>&nbsp;&nbsp;Logout</a>
+							</div>
+						</div>
+						{% endif %}
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							EN
+						</a>
+
+						<a href="#" class="flex-c-m trans-04 p-lr-25">
+							IND
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="wrap-menu-desktop how-shadow1">
+				<nav class="limiter-menu-desktop container">
+
+					<a href="/" class="logo">
+						<img src="{% static 'products/images/icons/logo-01.png' %}" alt="IMG-LOGO">
+					</a>
+
+					<div class="menu-desktop">
+						<ul class="main-menu">
+							<li>
+								<a href="/">Home</a>
+							</li>
+						
+							<li>
+								<a href="{% url 'shop_view' %}">Shop</a>
+							</li>
+						
+							<li class="label1" data-label1="hot">
+								<a href="{% url 'featured_view' %}">Featured</a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+							<i class="zmdi zmdi-search"></i>
+						</div>
+
+                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
+                            data-notify="{{ cart_items_count }}">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </div>
+
+                        <a href="{% url 'wishlist_view' %}" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+                        data-notify="{{ wishlist_count }}">
+                            <i class="zmdi zmdi-favorite-outline"></i>
+                        </a>
+					</div>
+				</nav>
+			</div>	
+		</div>
+
+		<div class="wrap-header-mobile">
+			<div class="logo-mobile">
+				<a href="/"><img src="{% static 'products/images/icons/logo-01.png' %}" alt="IMG-LOGO"></a>
+			</div>
+
+			<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+					<i class="zmdi zmdi-search"></i>
+				</div>
+
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
+                    data-notify="{{ cart_items_count }}">
+                    <i class="zmdi zmdi-shopping-cart"></i>
+                </div>
+
+                <a href="{% url 'wishlist_view' %}" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+                data-notify="{{ wishlist_count }}">
+                    <i class="zmdi zmdi-favorite-outline"></i>
+                </a>
+			</div>
+
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+
+		<div class="menu-mobile">
+			<ul class="topbar-mobile">
+				<li>
+					<div class="left-top-bar">
+						Free shipping for standard order over <span style="font-family: Arial, sans-serif;">₹</span>499
+					</div>
+				</li>
+
+				<li>
+					<div class="right-top-bar flex-w h-full">
+						{% if not request.user.is_authenticated %}
+						<div class="dropdown">
+							<a href="#" class="flex-c-m trans-04 p-lr-25 dropdown-toggle" id="dropdownMenuButton">
+								Login
+							</a>
+							<div class="dropdown-menu" id="dropdownMenu">
+								<a href="{% url 'register' %}" class="dropdown-item">New Customer? <span style="font-weight:bold; color:#333;">Sign Up</span></a>
+								<a href="{% url 'login' %}" class="dropdown-item"><i class='bx bx-log-in'></i>&nbsp;&nbsp;Login</a>
+							</div>
+						</div>
+						{% else %}
+						<div class="dropdown">
+							<a href="#" class="flex-c-m trans-04 p-lr-25 dropdown-toggle" id="dropdownMenuButton">
+								Welcome, {{ request.user.first_name }}
+							</a>
+							<div class="dropdown-menu" id="dropdownMenu">
+								<a href="{% url 'profile' %}" class="dropdown-item"><i class='bx bx-user'></i>&nbsp;&nbsp;My Profile</a>
+                                <a href="{% url 'orders_list' %}" class="dropdown-item"><i class='bx bx-package'></i>&nbsp;&nbsp;My Orders</a>
+								<a href="{% url 'logout' %}" class="dropdown-item"><i class='bx bx-log-out'></i>&nbsp;&nbsp;Logout</a>
+							</div>
+						</div>
+						{% endif %}
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							EN
+						</a>
+
+						<a href="#" class="flex-c-m p-lr-10 trans-04">
+							IND
+						</a>
+					</div>
+				</li>
+			</ul>
+
+			<ul class="main-menu-m">
+				<li>
+					<a href="/">Home</a>
+				</li>
+
+				<li>
+					<a href="{% url 'shop_view' %}">Shop</a>
+				</li>
+
+				<li class="label1" data-label1="hot">
+					<a href="{% url 'featured_view' %}">Featured</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+			<div class="container-search-header">
+				<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
+					<img src="{% static 'products/images/icons/icon-close2.png' %}" alt="CLOSE">
+				</button>
+
+				<form class="wrap-search-header flex-w p-l-15" method="GET" action="{% url 'search_products' %}">
+					<button type="submit" class="flex-c-m trans-04">
+						<i class="zmdi zmdi-search"></i>
+					</button>
+					<input class="plh3" type="text" name="search" placeholder="Search...">
+				</form>
+			</div>
+		</div>
+	</header>
+
+	<div class="wrap-header-cart js-panel-cart">
+		<div class="s-full js-hide-cart"></div>
+
+		<div class="header-cart flex-col-l p-l-65 p-r-25">
+			<div class="header-cart-title flex-w flex-sb-m p-b-8">
+				<span class="mtext-103 cl2">
+					Your Cart
+				</span>
+
+				<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+					<i class="zmdi zmdi-close"></i>
+				</div>
+			</div>
+
+			{% if cart_items_base %}
+			<div class="header-cart-content flex-w js-pscroll">
+				
+				<ul class="header-cart-wrapitem w-full">
+					{% for cart_item in cart_items_base %}
+					<li class="header-cart-item flex-w flex-t m-b-12 mt-3">
+						<div class="header-cart-item-img">
+							<img src="{{ cart_item.item_product_image.image.url }}" alt="{{ cart_item.item_name }}">
+						</div>
+
+						<div class="header-cart-item-txt p-t-8">
+							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+								{{ cart_item.item_name }}
+							</a>
+
+							<span class="header-cart-item-info">
+								{{ cart_item.item_quantity }} x <span style="font-family: Arial, sans-serif;">₹ </span>{{ cart_item.item_discounted_price }}
+							</span>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+				
+				<div class="w-full">
+					<div class="header-cart-total w-full p-tb-40">
+						Total: <span style="font-family: Arial, sans-serif;">₹ </span>{{ total_cart_price }}
+					</div>
+
+					<div class="header-cart-buttons d-flex justify-content-center">
+						<a href="{% url 'cart_view' %}"
+							class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
+							View Cart
+						</a>
+					</div>
+				</div>
+			</div>
+			{% else %}
+			<div class="m-lr-auto m-b-50">
+				<div class="empty-cart d-flex justify-content-center flex-column align-items-center p-t-100">
+					<p class="text-center" style="font-size: 20px; font-weight: bold;">Your Cart is Currently Empty</p>
+					<p class="text-center" style="margin-bottom: 20px;">Start adding products you love!</p>
+					<a href="{% url 'shop_view' %}" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px;">Go to Shop</a>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+
+    <div class="bg0 p-b-65">
+		<div class="container">
+			<div class="bread-crumb flex-w p-r-15 p-t-37 p-lr-0-lg">
+				<a href="/" class="stext-111 cl8 hov-cl1 trans-04">
+					Home
+					<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+				</a>
+
+				<span class="stext-111 cl4">
+					My Profile
+				</span>
+			</div>
+				<section class="section profile p-t-30">
+				<div class="row">
+				<div class="col-xl-4">
+					<div class="card">
+					<div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+						{% if user_profile.profile_image %}
+						<img src="{{ user_profile.profile_image.url }}" alt="Profile" class="rounded-circle">
+						{% else %}
+						<img src="{% static 'shop_admin/img/no_profile_img.png' %}" alt="Profile" class="rounded-circle">
+						{% endif %}
+						<h2>{{ user.first_name }} {{ user.surname }}</h2>
+					</div>	
+					</div>
+				</div>
+				<div class="col-xl-8">
+					<div class="card">
+					<div class="card-body pt-3">
+						
+						<ul class="nav nav-tabs nav-tabs-bordered">
+						<li class="nav-item">
+							<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#manage-addresses">Manage Addresses</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+						</li>
+						</ul>
+		
+						<div class="tab-content pt-2">
+						<div class="tab-pane fade show active profile-overview" id="profile-overview">
+							<h5 class="card-title">Profile Details</h5>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label ">First Name</div>
+							<div class="col-lg-9 col-md-8">{{ user.first_name }}</div>
+							</div>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label ">Surname</div>
+							{% if user.surname %}
+								<div class="col-lg-9 col-md-8">{{ user.surname }}</div>
+							{% else %}
+								<div class="col-lg-9 col-md-8">-</div>
+							{% endif %}
+							</div>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label">Email</div>
+							<div class="col-lg-9 col-md-8">{{ user.email }}</div>
+							</div>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label">Address</div>
+							{% if user_profile.address %}
+								<div class="col-lg-9 col-md-8">{{ user_profile.address }}</div>
+							{% else %}
+								<div class="col-lg-9 col-md-8">-</div>
+							{% endif %}
+							</div>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label">City</div>
+							{% if user_profile.city %} 
+								<div class="col-lg-9 col-md-8">{{ user_profile.city }}</div>
+							{% else %}
+								<div class="col-lg-9 col-md-8">-</div>
+							{% endif %}
+							</div>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label">Country</div>
+							<div class="col-lg-9 col-md-8">{{ user.country }}</div>
+							</div>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label">Country Code</div>
+							<div class="col-lg-9 col-md-8">{{ user.countryCode }}</div>
+							</div>
+							<div class="row">
+							<div class="col-lg-3 col-md-4 label">Mobile</div>
+							<div class="col-lg-9 col-md-8">{{ user.mobile }}</div>
+							</div>
+						</div>
+		
+						<div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+							<form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
+							{% csrf_token %}
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="profile_image">Profile Image</label>
+								</div>
+								<div class="col-md-9">
+								<div class="profile-image-preview mb-2">
+									{% if user_profile and user_profile.profile_image %}
+									<img src="{{ user_profile.profile_image.url }}" alt="Profile Image" id="profile_image_preview" class="img-fluid">
+									{% else %}
+									<img src="{% static 'shop_admin/img/no_profile_img.png' %}" alt="Profile Image" id="profile_image_preview" class="img-fluid">
+									{% endif %}
+								</div>
+								<input type="file" id="profile_image" name="profile_image" class="d-none">
+								<input type="hidden" id="remove_image" name="remove_image" value="false">
+								<div class="buttondiv pt-2">
+									<a href="#" id="upload_btn" class="btn btn-primary btn-sm me-2" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+									<a href="#" id="remove_btn" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+								</div>
+								</div>
+							</div>
+							
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="first_name">First Name</label>
+								</div>
+								<div class="col-md-9">
+								{{ form.first_name }}
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="surname">Surname</label>
+								</div>
+								<div class="col-md-9">
+								{{ form.surname }}
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="email">Email</label>
+								</div>
+								<div class="col-md-9">
+								{{ form.email }}
+								{% if form.email.errors %}
+								<div class="invalid-feedback d-block">
+									{% for error in form.email.errors %}
+									<p>{{ error }}</p>
+									{% endfor %}
+								</div>
+								{% endif %}
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="address">Address</label>
+								</div>
+								<div class="col-md-9">
+								<input type="text" id="address" name="address" class="form-control" value="{{ user_profile.address }}">
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="address">City</label>
+								</div>
+								<div class="col-md-9">
+								<input type="text" id="city" name="city" class="form-control" value="{{ user_profile.city }}">
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="country">Country</label>
+								</div>
+								<div class="col-md-9">
+								<select name="country" id="{{ form.country.id_for_label }}" class="form-select" required>
+									{% for option in form.country.field.widget.choices %}
+										<option value="{{ option.0 }}" {% if option.0 == form.country.value %}selected{% endif %}>{{ option.1 }}</option>
+									{% endfor %}
+								</select>
+								{% if form.country.errors %}
+								<div class="invalid-feedback d-block">
+									{% for error in form.country.errors %}
+									<p style="margin-left: 8px;">{{ error }}</p>
+									{% endfor %}
+								</div>
+								{% endif %}
+							</div>                    
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="countryCode">Country Code</label>
+								</div>
+								<div class="col-md-9">
+								<input type="text" style="background: #f6f6f6" id="countryCode" name="countryCode" class="form-control" value="{{ user.countryCode }}" readonly>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label for="mobile">Mobile</label>
+								</div>
+								<div class="col-md-9">
+								{{ form.mobile }}
+								{% if form.mobile.errors %}
+								<div class="invalid-feedback d-block">
+									{% for error in form.mobile.errors %}
+									<p>{{ error }}</p>
+									{% endfor %}
+								</div>
+								{% endif %}
+								</div>
+							</div>
+		
+							<div class="text-center d-flex justify-content-center">
+								<button type="submit" name="profile_update" class="btn btn-primary">Save Changes</button>
+							</div>
+							</form>
+						</div>
+
+						<div class="tab-pane fade pt-3" id="manage-addresses">
+							{% if addresses.count < 4 %}
+								<div class="d-flex justify-content-between align-items-center mb-4 address-style">
+									<a href="#" class="js-show-modal1" style="color:#666; font-size: 16px; padding-left: 10px;"><i class='bx bx-plus'></i>
+										<span style="padding-left: 6px;">Add a new address</span></a>
+								</div>
+							{% else %}	
+								<p class="text-center mt-4 mb-5">You can only add up to 4 addresses</p>
+							{% endif %}
+								{% for address in addresses %}
+								<div class="address-box mb-3 p-4" id="address-box-{{ address.id }}" style="border: 1px solid #ddd; border-radius: 5px; position: relative; background-color: #fff;">
+									<div class="address-options dropdown" id="address-options">
+										<button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton" aria-expanded="false">
+											<i class="bi bi-three-dots"></i>
+										</button>
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+											<li><a class="dropdown-item" href="javascript:void(0);" onclick="toggleEditMode({{ address.id }})">Edit</a></li>
+											<li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" data-address-id="{{ address.id }}">Delete</a></li>
+										</ul>
+									</div>								
+
+									<div class="view-mode">
+										<span class="badge text-dark address-type" style="text-transform: uppercase; font-size: 11px; background: #f0f0f0;">
+											{{ address.address_type }}
+										</span>
+										{% if address.default %}
+										<span class="badge bg-secondary">Primary</span>
+										{% endif %}
+										
+										<div class="address-header mt-3 mb-2">
+											<strong>{{ address.name }} &nbsp; {{ address.mobile }}</strong>
+										</div>
+							
+										<div class="address-body">
+											<p class="mb-1">{{ address.address }}, {{ address.locality }}, {{ address.city }}, {{ address.state }} - <strong>{{ address.pin_code }}</strong></p>
+										</div>
+									</div>
+							
+									<div class="edit-mode" style="display: none;">
+										
+									</div>
+								</div>
+								{% endfor %}
+						</div>
+		
+						<div class="tab-pane fade pt-3" id="profile-change-password">
+							<form method="POST" action="{% url 'profile' %}">
+							{% csrf_token %}
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label>Current Password</label>
+								</div>
+								<div class="col-md-9">
+								{{ ChangePasswordForm.current_password }}
+								</div>
+							</div>
+		
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label>New Password</label>
+								</div>
+								<div class="col-md-9">
+								{{ ChangePasswordForm.new_password }} 
+								</div>
+							</div>
+		
+							<div class="row mb-3">
+								<div class="col-md-3">
+								<label>Confirm Password</label>
+								</div>
+								<div class="col-md-9">
+								{{ ChangePasswordForm.confirm_password }}
+								</div>
+							</div>
+		
+							<div class="text-center d-flex justify-content-center">
+								<button type="submit" name="change_password" class="btn btn-primary">Save Changes</button>
+							</div>
+		
+							</form>
+						</div>
+						</div>
+					</div>
+					</div>
+				</div>
+				</div>
+			</section>
+			</div>
+		</div>
+	</main>	
+
+	<footer class="bg3 p-t-75 p-b-32">
+		<div class="container">
+			<div class="row d-flex justify-content-center">
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Categories
+					</h4>
+	
+					<ul>
+						{% for category in categories|slice:":5" %}
+						<li class="p-b-10">
+							<a href="{% url 'search_products_categoryid' category.slug %}" class="stext-107 cl7 hov-cl1 trans-04">
+								{{ category.name }}
+							</a>
+						</li>
+						{% endfor %}
+	
+					</ul>
+				</div>
+	
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						GET IN TOUCH
+					</h4>
+	
+					<p class="stext-107 cl7 size-201">
+						Any questions? Let us know in store at 1st Floor, Carnival Infopark. Phase 1,
+						Infopark Kochi P.O., Kakkanad – 682042 or call us
+						on (+91) 8281180914
+					</p>
+	
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content" style="bottom:-110px">
+				<div class="modal-header">
+					<h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					Are you sure you want to delete this category?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<form id="deleteForm" method="POST" action="{% url 'delete_address' %}">
+						{% csrf_token %}
+						<input type="hidden" name="address_id" id="address-id-input">
+						<button type="submit" class="btn btn-danger">Delete</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
+		<div class="toast-container">
+			{% if messages %}
+				{% for message in messages %}
+					<div class="toast align-items-center text-white {% if 'error' in message.tags %}bg-danger{% else %}bg-success{% endif %}" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="d-flex">
+							<div class="toast-body">
+								{{ message }}
+							</div>
+							<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+						</div>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+	
+	<!-- Modal1 -->
+	<div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+		<div class="overlay-modal1 js-hide-modal1"></div>
+
+		<div class="container">
+			<div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+				<button class="how-pos3 hov3 trans-04 js-hide-modal1">
+					<img src="{% static 'products/images/icons/icon-close.png' %}" alt="CLOSE">
+				</button>
+
+				<div class="row d-flex justify-content-center">
+					<div class="col-md-6 col-lg-7 p-b-30">
+						<div class="p-lr-0-lg">
+							<h4 class="mtext-105 cl2 js-name-detail p-b-14 text-center">
+								ADD A NEW ADDRESS
+							</h4>
+					
+						<form method="POST">
+							{% csrf_token %}
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.name }}
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.mobile }}
+									{% if CheckoutAddressesForm.mobile.errors %}
+									<div class="invalid-feedback d-block">
+										{% for error in CheckoutAddressesForm.mobile.errors %}
+										<p>{{ error }}</p>
+										{% endfor %}
+									</div>
+									{% endif %} 
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.pin_code }}
+									{% if CheckoutAddressesForm.pin_code.errors %}
+									<div class="invalid-feedback d-block">
+										{% for error in CheckoutAddressesForm.pin_code.errors %}
+										<p>{{ error }}</p>
+										{% endfor %}
+									</div>
+									{% endif %}  
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.locality }} 
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-flex justify-content-center">
+								<div class="col-md-10">
+									{{ CheckoutAddressesForm.address }} 
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.city }} 
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.state }}
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.landmark }} 
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.alternate_phone }}
+									{% if CheckoutAddressesForm.alternate_phone.errors %}
+									<div class="invalid-feedback d-block">
+										{% for error in CheckoutAddressesForm.alternate_phone.errors %}
+										<p>{{ error }}</p>
+										{% endfor %}
+									</div>
+									{% endif %}  
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-flex justify-content-center">
+								<div class="col-md-10">
+									<div class="form-check form-check-inline">
+										<input type="radio" class="form-check-input" id="home" name="address_type" value="Home" required>
+										<label class="form-check-label" for="home">Home</label>
+									</div>
+						
+									<div class="form-check form-check-inline">
+										<input type="radio" class="form-check-input" id="work" name="address_type" value="Work" required>
+										<label class="form-check-label" for="work">Work</label>
+									</div>
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-flex justify-content-center">
+								<div class="col-md-10">
+									<div class="form-check form-switch">
+										<input class="form-check-input" type="checkbox" id="{{ CheckoutAddressesForm.default.id_for_label }}" name="default" onchange="checkDefaultAddress()">
+										<label class="form-check-label" for="{{ CheckoutAddressesForm.default.id_for_label }}" style="padding-left: 6px;">
+											Set as Default Address
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<div id="warning-message" style="display: none; color: orange; margin-left: 63px;">
+								Already a default address exists
+							</div>
+							
+							<div class="d-flex justify-content-center align-items-center mt-4 mb-4">
+								<button type="submit" name="add_address" style="padding: 0.3rem 0.5rem; background: #4154f1; color: #fff; border-radius: 0.3rem;">Save Address</button>
+							</div>
+						</form>						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+	
+	<div class="btn-back-to-top" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up"></i>
+		</span>
+	</div>
+
+<!--===============================================================================================-->	
+	<script src="{% static 'products/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/animsition/js/animsition.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'products/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/select2/select2.min.js' %}"></script>
+
+	<script>
+
+		document.addEventListener("DOMContentLoaded", function () {
+			var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+			var toastList = toastElList.map(function (toastEl) {
+				return new bootstrap.Toast(toastEl, { delay: 3000 });
+			});
+			toastList.forEach(toast => toast.show());
+		});	
+		
+		function toggleEditMode(addressId) {
+			var addressBox = document.getElementById('address-box-' + addressId);
+			
+			var viewMode = addressBox.querySelector('.view-mode');
+			var editMode = addressBox.querySelector('.edit-mode');
+			
+			if (viewMode.style.display === 'none') {
+				viewMode.style.display = 'block';
+				editMode.style.display = 'none';
+			} else {
+				fetch(`../get_address_form/${addressId}/`)
+					.then(response => response.json())
+					.then(data => {
+						editMode.innerHTML = data.form_html;
+						var form = document.getElementById('address-update-form');
+						form.addEventListener('submit', submitAddressForm);
+						viewMode.style.display = 'none';
+						editMode.style.display = 'block';
+					})
+					.catch(error => {
+						console.error('Error fetching address form:', error);
+					});
+    		}
+		}
+
+		function submitAddressForm(event) {
+			event.preventDefault();
+			var form = event.target;
+			var addressId = form.dataset.addressId;
+			var formData = new FormData(form);
+		
+			fetch(`../update_address/${addressId}/`, {
+				method: 'POST',
+				body: formData,
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest',
+					'X-CSRFToken': getCookie('csrftoken')
+				}
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					location.reload();
+				} else {
+					document.querySelector('.edit-mode').innerHTML = data.form_html;
+				}
+			})
+			.catch(error => {
+				console.error('Error submitting form:', error);
+			});
+		}
+		
+		
+		function getCookie(name) {
+			let cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				const cookies = document.cookie.split(';');
+				for (let i = 0; i < cookies.length; i++) {
+					const cookie = cookies[i].trim();
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+		
+		
+	</script>	
+	
+
+	<script>
+	
+		document.addEventListener("DOMContentLoaded", function() {
+			document.getElementById("upload_btn").addEventListener("click", function(event) {
+				event.preventDefault();
+				document.getElementById("profile_image").click();
+			});
+	
+			document.getElementById("remove_btn").addEventListener("click", function(event) {
+				event.preventDefault();
+				if (confirm("Are you sure you want to remove the profile image?")) {
+					document.getElementById("profile_image_preview").src = "{% static 'shop_admin/img/no_profile_img.png' %}";
+					document.getElementById("remove_image").value = 'true';
+					document.getElementById("profile_form").submit();
+				}
+			});
+	
+			document.getElementById("profile_image").addEventListener("change", function(event) {
+				if (event.target.files.length > 0) {
+					let reader = new FileReader();
+					reader.onload = function(e) {
+						document.getElementById("profile_image_preview").src = e.target.result;
+					}
+					reader.readAsDataURL(event.target.files[0]);
+				}
+			});
+		});
+
+	</script>
+
+	<script>
+
+		$(".js-select2").each(function(){
+			$(this).select2({
+				minimumResultsForSearch: 20,
+				dropdownParent: $(this).next('.dropDownSelect2')
+			});
+		})
+
+		$('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var addressId = button.data('address-id');
+            var modal = $(this);
+            modal.find('#address-id-input').val(addressId);
+        });
+	</script>
+
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/daterangepicker/moment.min.js' %}"></script>
+	<script src="{% static 'products/vendor/daterangepicker/daterangepicker.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/slick/slick.min.js' %}"></script>
+	<script src="{% static 'products/js/slick-custom.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/parallax100/parallax100.js' %}"></script>
+	<script>
+        $('.parallax100').parallax100();
+	</script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/MagnificPopup/jquery.magnific-popup.min.js' %}"></script>
+	<script>
+		$('.gallery-lb').each(function() { // the containers for all your galleries
+			$(this).magnificPopup({
+		        delegate: 'a', // the selector for gallery item
+		        type: 'image',
+		        gallery: {
+		        	enabled:true
+		        },
+		        mainClass: 'mfp-fade'
+		    });
+		});
+	</script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/isotope/isotope.pkgd.min.j' %}s"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/sweetalert/sweetalert.min.js' %}"></script>
+	<script>
+
+		function checkDefaultAddress() {
+			const checkbox = document.getElementById("{{ CheckoutAddressesForm.default.id_for_label }}");
+			const warningMessage = document.getElementById("warning-message");
+		
+			if (checkbox.checked) {
+				fetch('../check_default_address')
+					.then(response => response.json())
+					.then(data => {
+						if (data.exists) {
+							warningMessage.style.display = 'block'; 
+						} else {
+							warningMessage.style.display = 'none';
+						}
+					})
+					.catch(error => {
+						console.error('Error checking default address:', error);
+						warningMessage.style.display = 'none';
+					});
+			} else {
+				warningMessage.style.display = 'none';
+			}
+		}
+		
+	
+	</script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/vendor/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			$(this).css('position','relative');
+			$(this).css('overflow','hidden');
+			var ps = new PerfectScrollbar(this, {
+				wheelSpeed: 1,
+				scrollingThreshold: 1000,
+				wheelPropagation: false,
+			});
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+	</script>
+<!--===============================================================================================-->
+	<script src="{% static 'products/js/main.js' %}"></script>
+
+	<!-- Vendor JS Files -->
+	<script src="{% static 'shop_admin/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  
+	<!-- Template Main JS File -->
+	<script src="{% static 'shop_admin/js/main.js' %}"></script>
+	<script src="{% static 'shop_admin/js/profileView/script.js' %}"></script>
+
+</body>
+</html>

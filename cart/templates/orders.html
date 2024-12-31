@@ -1,0 +1,138 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+	
+	<style>
+		.empty-cart .btn, .login-required .btn {
+			border: none;
+			background-color: #717fe0;
+			color: #fff;
+			border-radius: 5px;
+			text-transform: uppercase;
+			transition: background-color 0.3s; 
+		}
+		
+		.empty-cart .btn:hover, .login-required .btn:hover {
+			background-color: #525eb3;
+		}
+	</style>
+
+
+{% endblock %}
+
+{% block header %}
+
+<header class="header-v4">
+
+{% endblock %}
+
+{% block shadow1 %}
+
+<div class="wrap-menu-desktop how-shadow1">
+
+{% endblock %}
+
+{% block menu %}
+<ul class="main-menu">
+	<li>
+		<a href="/">Home</a>
+	</li>
+
+	<li>
+		<a href="{% url 'shop_view' %}">Shop</a>
+	</li>
+
+	<li class="label1" data-label1="hot">
+		<a href="{% url 'featured_view' %}">Featured</a>
+	</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+	<div class="bg0 p-t-75 p-b-75">
+        <div class="container">
+			{% if orders %}
+			<div class="bread-crumb flex-w p-r-15 p-lr-0-lg pb-4">
+				<a href="/" class="stext-111 cl8 hov-cl1 trans-04">
+					Home
+					<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+				</a>
+				<span class="stext-111 cl4">
+					My Orders
+				</span>
+			</div>
+
+			<div class="row">
+                
+				{% for order in orders %}
+					{% for item in order.items.all %}
+					<div class="col-md-6 col-lg-4 mb-4">
+						<div class="card shadow-sm">
+							{% with item.sku.images.all|first as sku_image %}
+								{% if sku_image %}
+								<a href="{{ item.product.get_url }}" target="_blank"><img src="{{ sku_image.image.url }}" class="card-img-top" alt="Product Image"></a>
+								{% endif %}
+							{% endwith %}
+							<div class="card-body">
+								<h5 class="card-title">{{ item.product_name }}</h5>
+								<p><strong>Order Number: </strong> {{ order.order_id }}</p>
+								<p><strong>Date: </strong> {{ order.order_time }}</p>
+								<p><strong>Payment Mode: </strong> 
+									{% if order.payment_type == 'cod' %}
+										Cash on Delivery
+									{% else %}
+										{{ order.payment_type }}
+									{% endif %}
+								</p>
+								<p><strong>Total: </strong><span style="color: grey; font-family: Arial, sans-serif;">₹ {{ item.get_cost }}</span></p>
+								{% if item.tracking_info.status == 'processing' %}
+									<p><strong>Status: </strong> <span class="badge badge-warning">Processing</span></p>
+								{% elif item.tracking_info.status == 'shipped' %}
+									<p><strong>Status: </strong> <span class="badge badge-primary">Shipped</span></p>
+								{% elif item.tracking_info.status == 'out_for_delivery' %}
+									<p><strong>Status: </strong> <span class="badge badge-info">Out for Delivery</span></p>
+								{% elif item.tracking_info.status == 'delivered' %}
+									<p><strong>Status: </strong> <span class="badge badge-success">Delivered</span></p>
+								{% elif item.tracking_info.status == 'returned' %}
+									<p><strong>Status: </strong> <span class="badge badge-info">Returned</span></p>
+								{% elif item.tracking_info.status == 'cancelled' %}
+									<p><strong>Status: </strong> <span class="badge badge-danger">Cancelled</span></p>
+								{% else %}
+									<p><strong>Status: </strong> <span class="badge badge-secondary">Pending</span></p>
+								{% endif %}
+							</div>
+
+							<div class="card-footer d-flex justify-content-between">
+								<a href="{{ item.product.get_url }}" target="_blank" class="btn btn-info btn-sm">View Details</a>
+								<a href="{% url 'track_item' tracking_id=item.tracking_info.tracking_id %}" class="btn btn-outline-success btn-sm">Track</a>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				{% endfor %}
+            </div>
+			{% else %}
+
+				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+					<div class="empty-cart d-flex justify-content-center flex-column align-items-center p-t-100 p-b-100">
+						<p class="text-center" style="font-size: 20px; font-weight: bold;">You have no orders yet</p>
+						<p class="text-center" style="margin-bottom: 20px;">Start adding products you love!</p>
+						<a href="{% url 'shop_view' %}" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px;">Go to Shop</a>
+					</div>
+				</div>
+
+			{% endif %}
+        </div>
+    </div>    
+
+{% endblock %}
+
+{% block script %}
+
+</body>
+</html>
+
+{% endblock %}

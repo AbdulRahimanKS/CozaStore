@@ -1,0 +1,911 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+
+	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<style>
+		.table-shopping-cart .column-4 {
+            text-align: center;
+        }
+
+        .table-shopping-cart .column-1 {
+            padding-left: 25px;
+        }
+
+        .table-shopping-cart .column-6 {
+            padding-right: 25px;
+            text-align: right;
+            font-size: 16px;
+        }
+
+        .table-shopping-cart .column-5 {
+            padding-right: 40px;
+        }
+
+        .table-shopping-cart .column-3 {
+            width: 120px;
+        }
+        
+        .table-shopping-cart .table_row {
+            height: 160px;
+        }
+
+        .table-shopping-cart .table_row td {
+            padding-top: 20px;
+        }
+
+        .table-shopping-cart .table_row td.column-1 {
+            padding-bottom: 20px;
+        }
+
+        .address-box {
+            border-top: 1px solid #e6e6e6;
+            border-bottom: 1px solid #e6e6e6;
+            border-left: 1px solid #e6e6e6;
+            border-right: 1px solid #e6e6e6;
+            width: 105%;
+            height: 85px;
+        }
+        
+        .product-name {
+            display: inline-block;
+            max-width: 142px; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+        }
+
+		.change-address {
+			position: absolute;
+			left: 652px;
+    		top: 26px;
+			background: #222; 
+			color: #fff;
+			z-index: 10;
+			border: 0;
+			border-radius: 8px;
+		}
+		
+		.change-address:hover {
+			border-color: #717fe0;
+			background-color: #717fe0;
+			color: #fff;
+		}
+
+		.add-address {
+			position:relative; 
+			left:622px; 
+			top:0px;
+			background: #222; 
+			color: #fff;
+			z-index: 10;
+			border: 0;
+			border-radius: 8px;
+		}
+
+		.empty-cart .btn, .login-required .btn {
+			border: none;
+			background-color: #717fe0;
+			color: #fff;
+			border-radius: 5px;
+			text-transform: uppercase;
+			transition: background-color 0.3s; 
+		}
+		
+		.empty-cart .btn:hover, .login-required .btn:hover {
+			background-color: #525eb3;
+		}
+
+		.coupon-check {
+			position: absolute;
+			right: 102px;
+			top: 76px;
+			background: #222;
+			border-radius: 8px;
+			padding: 6px;
+			width: 56px;
+		}
+
+		.coupon-input:focus {
+			border: 1px solid #666;
+		}
+
+		.coupon-check:hover {
+			background: #525eb3;
+		}
+
+		.toast-container {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			z-index: 2000;
+		}
+		
+        @media (max-width: 768px) {
+			.add-address {
+				left:0px; 
+			}
+
+			.coupon-check {
+				right: 125px;
+			}
+
+			.change-address {
+				left: 448px;
+    			top: 26px;
+			}
+        }
+		
+	</style>
+
+{% endblock %}
+
+{% block header %}
+
+<header class="header-v4">
+
+{% endblock %}
+
+{% block shadow1 %}
+
+<div class="wrap-menu-desktop how-shadow1">
+
+{% endblock %}
+
+{% block menu %}
+<ul class="main-menu">
+	<li>
+		<a href="/">Home</a>
+	</li>
+
+	<li>
+		<a href="{% url 'shop_view' %}">Shop</a>
+	</li>
+
+	<li class="label1" data-label1="hot">
+		<a href="{% url 'featured_view' %}">Featured</a>
+	</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+	<form class="bg0 p-t-75 p-b-75" id="cart-form" method="POST" action="{% url 'set_order_details' %}">
+		{% csrf_token %}
+		<div class="container">
+			<div class="row">
+				{% if cart_items %}
+				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+					{% if user.is_authenticated %}
+						{% if default_address %}
+						<div class="row pb-4" style="margin:0px">
+							<div class="m-l-25 m-r--60 m-lr-0-xl p-3 pl-4 address-box">
+								<span class="stext-110" style="color:#333">Deliver to:</span> &nbsp;&nbsp;{{ default_address.name }}, {{ default_address.address }} <br>
+								{{ default_address.locality }}, {{ default_address.city }}, {{ default_address.state }} - {{ default_address.pin_code }}, {{ default_address.mobile}}
+								<input type="hidden" id="selected_address_id" name="selected_address_id" value="{{ default_address.id }}">
+							</div>
+							<a href="#" class="btn btn-primary change-address" data-toggle="modal" data-target="#addressModal" style="border:none">
+								Change
+							</a>
+						</div>
+						{% else %}
+						<div class="row pb-4" style="margin:0px">
+							<div class="m-l-25 m-r--60 m-lr-0-xl p-3 pl-4 d-flex align-items-center address-box" style="height:60px">
+								<a href="#" class="js-show-modal1" style="color:#666; font-size: 16px;"><i class='bx bx-plus'></i>
+									<span style="padding-left: 6px;">Add a new address</span></a>
+							</div>
+						</div>
+						{% endif %}
+					{% endif %}
+
+                    <div class="row" style="margin:0px">
+                        <div class="m-l-25 m-r--60 m-lr-0-xl">
+                            <div class="wrap-table-shopping-cart">
+                                <table class="table-shopping-cart">
+                                    <tr class="table_head">
+                                        <th class="column-1">Product</th>
+                                        <th class="column-2"></th>
+                                        <th class="column-3">Net Price</th>
+                                        <th class="column-4">Quantity</th>
+                                        <th class="column-5" style="padding-right: 45px;">Total</th>
+                                        <th class="column-6"></th>
+                                    </tr>
+									
+									{% for item in cart_items %}
+                                    <tr class="table_row" id="cart-item-row-{{ item.product_sku.id }}" data-product-id="{{ item.product_id }}" data-can-submit="{{ item.can_submit }}" data-issues="{{ item.issues }}">
+                                        <td class="column-1">
+                                            <div class="how-itemcart1">
+                                                <img src="{{ item.product_image.image.url }}" alt="IMG">
+                                            </div>
+                                        </td>
+                                        <td class="column-2">
+                                            <a href="{{ item.product_url }}" target="_blank" style="color:inherit">
+												<span class="product-name">{{ item.product_name }}</span>
+											</a>
+											<br>
+
+											{% if item.variations %}
+												{% for variation in item.variations %}
+													<span>{{ variation.name }}: {{ variation.value }}</span><br>
+												{% endfor %}
+											{% endif %}
+
+											{% if item.product_discount_percentage > 0 %}
+												<span style="text-decoration: line-through; color: grey; font-family: Arial, sans-serif;">₹ {{ item.product_price }}</span>
+												<span style="font-family: Arial, sans-serif; font-size:small; color: #388e3c;">({{ item.product_discount_percentage }}% OFF)</span>
+											{% else %}
+												<span style="color: grey; font-family: Arial, sans-serif;">₹ {{ item.product_price }}</span>
+											{% endif %}
+                                        </td>
+                                        <td class="column-3" style="padding-left: 3px;"><span style="font-family: Arial, sans-serif; color: grey;" data-price="{{ item.product_discounted_price }}">₹ {{ item.product_discounted_price }}</span></td>
+                                        <td class="column-4">
+                                            <div class="wrap-num-product flex-w m-l-auto m-r-0" data-sku-id="{{ item.product_sku.id }}">
+                                                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" id="btn-minus-{{ item.product_sku.id }}" onclick="updateQuantity('{{ item.product_id }}', '{{ item.product_sku.id }}', -1)">
+                                                    <i class="fs-16 zmdi zmdi-minus"></i>
+                                                </div>
+
+                                                <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="{{ item.cart_item.quantity }}" min="1" id="quantity-{{ item.product_sku.id }}">
+
+                                                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" id="btn-plus-{{ item.product_sku.id }}" onclick="updateQuantity('{{ item.product_id }}', '{{ item.product_sku.id }}', 1)">
+                                                    <i class="fs-16 zmdi zmdi-plus"></i>
+                                                </div>
+                                            </div>
+											<span style="color:#f8380e; font-size: 13px; display: {% if not item.delivery_available %}inline{% else %}none{% endif %};">
+												Unavailable for delivery
+											</span>
+											<p class="stock-message" id="stock-message-{{ item.product_sku.id }}" style="color:#f8380e; display: {% if item.stock_limit_reached %}inline{% else %}none{% endif %}; font-size: 13px;">
+												{% if item.stock_limit_reached %}Only {{ item.stock_available }} stocks exists{% else %}Stock limit reached{% endif %}</p>
+										</td>
+                                        <td class="column-5" id="total-price-{{ item.product_sku.id }}"><span style="font-family: Arial, sans-serif; color: grey;">₹ {{ item.initial_total_price }}</span></td>
+                                        <td class="column-6" id="cart-item-row-{{ item.product_sku.id }}">
+											<i class="fa fa-trash" 
+											style="font-size: large; color: #12101066; cursor: pointer; position: relative; z-index: 10;"
+											onclick="removeCartItem('{{ item.product_id }}', '{{ item.product_sku.id }}')"></i>
+										</td>
+                                    </tr>
+
+									<input type="hidden" name="cart_items" value="{{ item.product_id }}">
+									<input type="hidden" name="sku_{{ forloop.counter }}" value="{{ item.product_sku.id|default:'' }}">
+
+									{% endfor %}
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+
+				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+					<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+						<h4 class="mtext-109 cl2 p-b-18">
+							Coupon
+						</h4>
+
+						<div class="flex-w flex-t p-b-33 bor12">
+							<div id="coupon-section">	
+									<div class="check-coupon-container">
+										<input type="text" id="coupon_code" name="coupon_code" placeholder="Enter coupon code" class="coupon-input form-control" autocomplete="off">
+										<p class="coupon-check text-center">
+											<button type="button" id="submitCoupon" class="coupon-submit">
+											<span id="check_text" style="color: #fff">Apply<span>
+										</button></p>
+									</div>
+							</div>
+
+							{% if coupon_details %}
+								{% for coupon_detail in coupon_details %}
+								<div class="applied-coupon mt-3">
+									<div style="font-size: 13px; line-height: 20px;">
+										<strong>Applied Coupon:</strong> {{ coupon_detail.code }}<br>
+										<strong>Details:</strong> {{ coupon_detail.description }}<br>
+										<strong>Discount Amount:</strong> ₹{{ coupon_detail.discount_amount }}
+									</div>
+									<button type="button" style="background: gray; padding-left:3px; padding-right:3px; color:#fff; font-size:smaller;" class="remove-coupon" data-coupon-code="{{ coupon_detail.code }}">Remove</i></button>
+								</div>
+								<input type="hidden" name="coupon_codes" value="{{ coupon_detail.code }}">
+								{% endfor %}
+							{% endif %}
+						</div>
+
+						<h4 class="mtext-109 cl2 p-b-30 mt-4">
+							Price Details
+						</h4>
+
+						<div class="flex-w flex-t p-b-13">
+							<div class="size-208" style="width: 50%">
+								<span class="stext-110 cl2">
+									Price <span style="font-size: 13px">({% if total_cart_items_count == 1 %}{{ total_cart_items_count }} Item{% else %}{{ total_cart_items_count }} Items{% endif %}):</span>
+								</span>
+							</div>
+
+							<div class="size-209" style="text-align: end; width: 40%">
+								<span class="mtext-110 cl2">
+									<span style="font-family: Arial, sans-serif;" id="total-original-price">₹ {{ total_original_price }}</span>
+								</span>
+							</div>
+						</div>
+
+						{% if coupon_discount %}
+						<div class="flex-w flex-t p-b-13">
+							<div class="size-208" style="width: 50%">
+								<span class="stext-110 cl2">
+									Coupon:
+								</span>
+							</div>
+							<div class="size-209" style="text-align: end; width: 40%">
+								<span class="mtext-110 cl2" style="color: green">
+									- <span style="font-family: Arial, sans-serif;">₹ </span>{{ coupon_discount }}
+								</span>
+							</div>
+						</div>
+						{% endif %}
+
+                        <div class="flex-w flex-t p-b-13">
+							<div class="size-208" style="width: 50%">
+								<span class="stext-110 cl2">
+									Discount:
+								</span>
+							</div>
+
+							<div class="size-209" style="text-align: end; width: 40%">
+								<span class="mtext-110 cl2" style="color:green">
+									- <span style="font-family: Arial, sans-serif;" id="total-discount">₹ {{ total_discount }}</span>
+								</span>
+							</div>
+						</div>
+
+                        <div class="flex-w flex-t bor12 p-b-13">
+							<div class="size-208" style="width: 50%">
+								<span class="stext-110 cl2">
+									Delivery Charges:
+								</span>
+							</div>
+
+							<div class="size-209" style="text-align: end; width: 40%">
+								{% if show_strikethrough %}
+									<span class="mtext-110 cl2" style="color: green">
+										<span style="font-family: Arial, sans-serif;">₹ </span><span style="text-decoration: line-through">{{ delivery_charge_display }}</span>
+									</span>
+								{% else %}
+									<span class="mtext-110 cl2">
+										<span style="font-family: Arial, sans-serif;">₹</span> {{ delivery_charge_display }}
+									</span>
+								{% endif %}
+							</div>
+						</div>
+						
+						<div class="flex-w flex-t p-t-27 p-b-33">
+							<div class="size-208" style="width: 50%">
+								<span class="mtext-101 cl2">
+									Total Amount:
+								</span>
+							</div>
+
+							<div class="size-209 p-t-1" style="text-align: end; width: 40%">
+								<span class="mtext-110 cl2">
+									<span style="font-family: Arial, sans-serif;" id="total-amount">₹ {{ total_discounted_price }}</span>
+								</span>
+							</div>
+						</div>
+
+						<input type="hidden" name="total_amount" value="{{ total_original_price }}">
+						<input type="hidden" name="coupon_discount" value="{{ coupon_discount }}">
+						<input type="hidden" name="total_discount" value="{{ total_discount }}">
+						<input type="hidden" name="discounted_amount" value="{{ total_discounted_price }}">
+						<input type="hidden" name="delivery_charge_amount" value="{{ delivery_charge_amount }}">
+						<input type="hidden" name="discounted_price_without_coupon" value="{{ discounted_price_without_coupon }}">
+
+						{% if user.is_authenticated %}
+							{% if user.user_type == 'Shop' %}
+								<div class="bor12" style="padding-bottom: 27px;">
+									<button type="button" id="submit-cart-button" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+										Only Customers can checkout
+									</button>
+								</div>
+							{% else %}
+								<div class="bor12" style="padding-bottom: 27px;">
+									<button type="button" id="submit-cart-button" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+										Proceed to Checkout
+									</button>
+								</div>
+							{% endif %}
+						{% else %}
+						<div class="bor12" style="padding-bottom: 27px;">
+							<a href="{% url 'login' %}" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+								Login to Checkout
+							</a>
+						</div>
+						{% endif %}
+
+                        <p class="pt-3" style="color:green">You will save <span id="total-discount-text">₹ {{ total_discount }}</span> on this order</p>
+
+					</div>
+				</div>
+				{% else %}
+				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+					<div class="empty-cart d-flex justify-content-center flex-column align-items-center p-t-100 p-b-100">
+						<p class="text-center" style="font-size: 20px; font-weight: bold;">Your Cart is Currently Empty</p>
+						<p class="text-center" style="margin-bottom: 20px;">Start adding products you love!</p>
+						<a href="{% url 'shop_view' %}" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px;">Go to Shop</a>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</form>
+
+	<!-- Modal1 -->
+	<div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content" style="top:110px">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addressModalLabel">Select Delivery Address</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="addressForm">
+						<input type="hidden" id="selected_address_id" name="selected_address_id" value="">
+						{% for address in addresses %}
+						<div class="address-option" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;">
+							<input type="radio" id="address-{{ address.id }}" name="selected_address" value="{{ address.id }}">
+							<label for="address-{{ address.id }}">
+								<strong class="name">{{ address.name }}</strong><br>
+								<span class="full-address">{{ address.address }}</span>, 
+								<span class="locality">{{ address.locality }}</span>, 
+								<span class="city">{{ address.city }}</span> - 
+								<span class="pin-code">{{ address.pin_code }}</span><br>
+								<span class="state">{{ address.state }}</span><br>
+								Mobile: <span class="mobile">{{ address.mobile }}</span>
+							</label>
+						</div>
+						{% endfor %}
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" id="selectAddressButton" style="background: #222; color:#fff; border: none;">Select Address</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal2 -->
+	<div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+		<div class="overlay-modal1 js-hide-modal1"></div>
+
+		<div class="container">
+			<div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+				<button class="how-pos3 hov3 trans-04 js-hide-modal1">
+					<img src="{% static 'products/images/icons/icon-close.png' %}" alt="CLOSE">
+				</button>
+
+				<div class="row d-flex justify-content-center">
+					<div class="col-md-6 col-lg-7 p-b-30">
+						<div class="p-lr-0-lg">
+							<h4 class="mtext-105 cl2 js-name-detail p-b-14 text-center">
+								ADD A NEW ADDRESS
+							</h4>
+					
+						<form method="POST" action="{% url 'cart_view' %}">
+							{% csrf_token %}
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.name }}
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.mobile }}
+									{% if CheckoutAddressesForm.mobile.errors %}
+									<div class="invalid-feedback d-block">
+										{% for error in CheckoutAddressesForm.mobile.errors %}
+										<p>{{ error }}</p>
+										{% endfor %}
+									</div>
+									{% endif %} 
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.pin_code }}
+									{% if CheckoutAddressesForm.pin_code.errors %}
+									<div class="invalid-feedback d-block">
+										{% for error in CheckoutAddressesForm.pin_code.errors %}
+										<p>{{ error }}</p>
+										{% endfor %}
+									</div>
+									{% endif %}  
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.locality }} 
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-flex justify-content-center">
+								<div class="col-md-10">
+									{{ CheckoutAddressesForm.address }} 
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.city }} 
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.state }}
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-md-flex justify-content-center">
+								<div class="col-md-5 mb-3 mb-md-0">
+									{{ CheckoutAddressesForm.landmark }} 
+								</div>
+								<div class="col-md-5">
+									{{ CheckoutAddressesForm.alternate_phone }}
+									{% if CheckoutAddressesForm.alternate_phone.errors %}
+									<div class="invalid-feedback d-block">
+										{% for error in CheckoutAddressesForm.alternate_phone.errors %}
+										<p>{{ error }}</p>
+										{% endfor %}
+									</div>
+									{% endif %}  
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-flex justify-content-center">
+								<div class="col-md-10" style="margin-left:40px">
+									<div class="form-check form-check-inline">
+										<input type="radio" class="form-check-input" id="home" name="address_type" value="Home" required>
+										<label class="form-check-label" for="home">Home</label>
+									</div>
+						
+									<div class="form-check form-check-inline" style="margin-left:40px">
+										<input type="radio" class="form-check-input" id="work" name="address_type" value="Work" required>
+										<label class="form-check-label" for="work">Work</label>
+									</div>
+								</div>
+							</div>
+						
+							<div class="row mb-3 d-flex justify-content-center">
+								<div class="col-md-10" style="margin-left:40px">
+									<div class="form-check form-switch">
+										<input class="form-check-input" type="checkbox" id="{{ CheckoutAddressesForm.default.id_for_label }}" name="default" onchange="checkDefaultAddress()">
+										<label class="form-check-label" for="{{ CheckoutAddressesForm.default.id_for_label }}" style="padding-left: 6px;">
+											Set as Default Address
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<div id="warning-message" style="display: none; color: orange; margin-left: 63px;">
+								Already a default address exists
+							</div>
+							
+							<div class="d-flex justify-content-center align-items-center mt-4 mb-4">
+								<button type="submit" name="add_address" style="padding: 0.3rem 0.5rem; background: #4154f1; color: #fff; border-radius: 0.3rem;">Save Address</button>
+							</div>
+						</form>						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block script %}
+
+	<script>
+
+		document.getElementById('selectAddressButton').addEventListener('click', function() {
+			const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
+		
+			if (selectedAddress) {
+				const selectedDiv = selectedAddress.closest('.address-option');
+				const name = selectedDiv.querySelector('.name').innerText;
+				const address = selectedDiv.querySelector('.full-address').innerText;
+				const locality = selectedDiv.querySelector('.locality').innerText;
+				const city = selectedDiv.querySelector('.city').innerText;
+				const state = selectedDiv.querySelector('.state').innerText;
+				const pinCode = selectedDiv.querySelector('.pin-code').innerText;
+				const mobile = selectedDiv.querySelector('.mobile').innerText;
+				const addressId = selectedAddress.value;
+
+				const csrftoken = '{{ csrf_token }}';
+		
+				document.querySelector('.address-box').innerHTML = `
+					<span class="stext-110" style="color:#333">Deliver to:</span> &nbsp; 
+					${name}, ${address}<br>
+					${locality}, ${city}, ${state} - ${pinCode}, Mobile: ${mobile}
+					<input type="hidden" id="selected_address_id" name="selected_address_id" value="${ selectedAddress.value }">
+				`;
+
+				fetch(`/cart/set_default_address/`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': csrftoken
+					},
+					body: JSON.stringify({ 
+						address_id: addressId,
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						location.reload();
+					} else {
+						alert('Failed to set default address. Please try again');
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		
+				$('#addressModal').modal('hide');
+			} else {
+				alert('Please select an address');
+			}
+		});		
+		
+	</script>
+
+	<script>
+		async function checkStock(productId, skuId, quantity) {
+			try {
+				const response = await fetch(`/cart/check_stock/${productId}/${skuId}/?quantity=${quantity}`);
+				const data = await response.json();
+				return data;
+			} catch (error) {
+				console.error('Error checking stock:', error);
+				return { stock_available: false, available_quantity: 0 };
+			}
+		}
+
+		function removeCommas(priceStr) {
+			return parseFloat(priceStr.replace(/,/g, ''));
+		}
+		
+		function formatWithCommas(number) {
+			return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+	
+		async function updateQuantity(productId, skuId, change) {
+			const quantityInput = document.getElementById(`quantity-${skuId}`);
+			const stockMessage = document.getElementById(`stock-message-${skuId}`);
+			const rowElement = document.getElementById(`cart-item-row-${skuId}`);
+			const totalPriceSpan = rowElement.querySelector(`#total-price-${skuId} span`); 
+			const discountedPriceSpan = rowElement.querySelector('[data-price]');
+		
+			let currentQuantity = parseInt(quantityInput.value) || 1;
+			let newQuantity = currentQuantity + change;
+		
+			if (newQuantity < 1) {
+				newQuantity = 1; 
+			}
+		
+			const stockData = await checkStock(productId, skuId, newQuantity);
+
+			if (stockData.stock_available) {
+				quantityInput.value = newQuantity;
+				location.reload();  
+			} else {
+				if (newQuantity > stockData.available_quantity) {
+					quantityInput.value = stockData.available_quantity;
+				}
+
+				const stockMessage = document.getElementById(`stock-message-${skuId}`);
+				if (stockMessage) {
+					stockMessage.style.display = 'block';
+				}
+			}
+		}
+		
+	</script>
+
+	<script>
+
+		async function removeCartItem(productId, skuId) {
+			console.log(`Attempting to remove item: Product ID = ${productId}, SKU ID = ${skuId}`);
+			swal({
+				title: "Are you sure?",
+				text: "Do you really want to remove this item from your cart?",
+				icon: "warning",
+				buttons: true,
+				dangerMode: true,
+			}).then(async (willDelete) => {
+				if (willDelete) {
+					try {
+						const response = await fetch(`/cart/remove_cartitem/${productId}/${skuId}/`, {
+							method: 'DELETE',
+							headers: {
+								'X-CSRFToken': getCookie('csrftoken'),
+							}
+						});
+
+						console.log('Response Status:', response.status);
+		
+						if (response.ok) {
+							const data = await response.json();
+		
+							window.location.reload();
+		
+						} else {
+							swal("Error", "Failed to remove item from the cart", "error");
+						}
+					} catch (error) {
+						console.error('Error removing cart item:', error);
+						swal("Error", "An error occurred while removing the item", "error");
+					}
+				}
+			});
+		}		
+		
+		function getCookie(name) {
+			let cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				const cookies = document.cookie.split(';');
+				for (let i = 0; i < cookies.length; i++) {
+					const cookie = cookies[i].trim();
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+		
+	</script>	
+
+	<script>
+
+		document.getElementById('submitCoupon').addEventListener('click', function(e) {
+			e.preventDefault();
+			
+			const couponCode = document.getElementById('coupon_code').value;
+			
+			if (!couponCode) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Oops!',
+					text: 'Please enter a coupon code',  
+				});
+				return;
+			}
+
+			fetch('../apply_coupon/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': '{{ csrf_token }}', 
+				},
+				body: JSON.stringify({
+					'coupon_code': couponCode,
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					window.location.reload()
+				} else {
+					Swal.fire({
+						icon: 'error',
+						title: 'Oops!',
+						text: data.message, 
+					});
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				Swal.fire({
+					icon: 'error',
+					title: 'Error!',
+					text: 'An unexpected error occurred. Please try again',
+				});
+			});
+		});
+		
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+	$(document).ready(function() {
+		$('.remove-coupon').click(function(e) {
+			e.preventDefault();
+
+			var couponCode = $(this).data('coupon-code');
+
+			$.ajax({
+				type: 'POST',
+				url: '{% url "remove_coupon" %}',
+				data: JSON.stringify({
+					'coupon_code': couponCode,
+					
+				}),
+				headers: {
+					contentType: 'application/json',
+					'X-CSRFToken': '{{ csrf_token }}'  
+				},
+				success: function(response) {
+					if (response.success) {
+						location.reload();
+					} else {
+						Swal.fire({
+							icon: 'error',
+							title: 'Oops!',
+							text: response.message, 
+						});
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error('Error:', error);
+					Swal.fire({
+						icon: 'error',
+						title: 'Error!',
+						text: 'An unexpected error occurred. Please try again',
+					});
+				}
+			});
+		});
+	});
+	</script>
+	
+	<script>
+
+		function validateCartAndSubmit() {
+			const cartItems = document.querySelectorAll('.table_row');
+			let formIsValid = true; 
+			let errorMessages = [];
+				
+			cartItems.forEach((item) => {
+				const canSubmit = item.dataset.canSubmit.toLowerCase() === 'true';
+				const issues = item.dataset.issues ? item.dataset.issues.split(',') : [];
+
+				if (!canSubmit) {
+					formIsValid = false;
+					const productName = item.querySelector('.product-name').innerText;
+					issues.forEach((issue) => {
+						let message = '';
+
+						switch (issue.trim().toLowerCase()) {
+							case 'delivery not available for this address':
+								message = `Remove ${productName} from cart`;
+								break;
+							case 'stock quantity exceeded than the stock':
+								message = `Adjust quantity for ${productName}`;
+								break;
+							default:
+								message = `Issue with ${productName}: ${issue}`;
+								break;
+						}
+						errorMessages.push(message);
+					});
+				}
+			});
+
+			if (!formIsValid) {
+				Swal.fire({
+					title: 'Error',
+					html: errorMessages.join('<br>'), 
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+			} else {
+				document.getElementById('cart-form').submit(); 
+			}
+		}
+	
+		document.getElementById('submit-cart-button').addEventListener('click', validateCartAndSubmit);
+
+	</script>	
+
+</body>
+</html>
+
+{% endblock %}

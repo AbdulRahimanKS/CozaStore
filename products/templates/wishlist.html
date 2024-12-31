@@ -1,0 +1,203 @@
+{% extends 'base_2.html' %}
+
+{% block styles %}
+
+{% load static %}
+{% load humanize %}
+
+	<style>
+
+		.ratings-summary {
+			display: flex;
+			align-items: center;
+			font-size: 16px;
+			color: #333;
+		}
+		
+		.ratings-summary h4 {
+			padding: 4px 13px;
+			background: #26a541;
+			border-radius: 20px;
+			font-size: 13px;
+			margin-right: 10px;
+			color: #fff;
+		}
+		
+		.ratings-summary p {
+			font-size: 14px;
+			color: #777;
+		}
+
+		.stock-warning {
+			color: #f1aa2b; 
+			font-weight: bold; 
+			margin-top: 10px;
+		}
+
+		.out-of-stock {
+			color: #e03838;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+		
+		.empty-wishlist .btn, .login-required .btn {
+			border: none;
+			background-color: #717fe0;
+			color: #fff;
+			border-radius: 5px;
+			text-transform: uppercase;
+			transition: background-color 0.3s; 
+		}
+		
+		.empty-wishlist .btn:hover, .login-required .btn:hover {
+			background-color: #525eb3;
+		}
+
+	</style>
+
+	{% endblock %}
+
+	{% block header %}
+	
+	<header class="header-v4">
+	
+	{% endblock %}
+	
+	{% block shadow1 %}
+	
+	<div class="wrap-menu-desktop how-shadow1">
+	
+	{% endblock %}
+	
+	{% block menu %}
+	<ul class="main-menu">
+		<li>
+			<a href="/">Home</a>
+		</li>
+	
+		<li>
+			<a href="{% url 'shop_view' %}">Shop</a>
+		</li>
+	
+		<li class="label1" data-label1="hot">
+			<a href="{% url 'featured_view' %}">Featured</a>
+		</li>
+	</ul>
+	{% endblock %}
+	
+	{% block content %}
+
+	<div class="bg0 m-t-65 p-b-80">
+		<div class="container">
+			{% if user.is_authenticated %}
+			
+			<div class="bread-crumb flex-w p-r-15 p-lr-0-lg pb-4">
+				<a href="/" class="stext-111 cl8 hov-cl1 trans-04">
+					Home
+					<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+				</a>
+				<span class="stext-111 cl4">
+					My Wishlist
+				</span>
+			</div>
+
+			<div class="product-rows">
+				{% if products %}
+                <div class="products row isotope-grid">
+                    {% for product in products %}
+                        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
+                            <div class="block2">
+                                {% if product.image %}
+                                    <div class="block2-pic hov-img0">
+                                        <a href="{{ product.get_url }}" target="_blank"><img src="{{ product.image.image.url }}" alt="IMG-PRODUCT"></a>
+                                    </div>
+                                {% endif %}
+                                <div class="block2-txt flex-w flex-t p-t-14">
+                                    <div class="block2-txt-child1 flex-col-l ">
+                                        <p class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            <span style="color: #121010; font-weight: 600">{{ product.brand }}</span>
+                                        </p>
+										{% if product.total_ratings > 0 %}
+											<div class="ratings-summary pt-1 pb-2">
+												<h4>{{ product.average_rating}}
+													<i class="fa fa-star"></i>
+												</h4>
+												<p>{{ product.total_ratings }} ratings and {{ product.total_reviews }} reviews</p>
+											</div>
+										{% else %}
+											<p class="pt-1 pb-2">No ratings yet</p>
+										{% endif %}
+										<a href="{{ product.get_url }}" target="_blank" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            {{ product.name }}
+                                        </a>
+                                        <span>
+											{% if product.discounted_price and product.discounted_price != product.price %}
+											<span class="stext-105 cl3" style="font-family: Arial, sans-serif;">₹ </span>{{ product.discounted_price|intcomma }}
+												<span class="stext-105 cl3" style="text-decoration: line-through; color: grey; margin-left: 4px; font-family: Arial, sans-serif;">
+													₹{{ product.price|intcomma }}
+												</span>
+											{% else %}
+												<span class="stext-105 cl3" style="font-family: Arial, sans-serif;">MRP <span style="font-family: Arial, sans-serif;">₹</span>{{ product.price|intcomma }}</span>
+											{% endif %}
+										
+											{% if product.sku.discount_rate != 0 %}
+												<span style="color: #388e3c; margin-left: 10px;">
+													({{ product.sku.discount_rate }}% off)
+												</span>
+											{% endif %}
+										</span>
+                                    </div>
+									
+                                    <div class="block2-txt-child2 flex-r">
+										<form action="{% url 'delete_wishlist_item' pk=product.id %}" method="POST">
+											{% csrf_token %}
+											<button type="submit" class="btn-addwish-b2 dis-block pos-relative js-removewish-b2">
+												<i class="fa fa-trash" style="font-size: large; color: #12101066;"></i>
+											</button>
+										</form>
+									</div>
+									
+									<div id="stock-message">
+										{% if product.sku.stock > 0 %}
+											{% if product.sku.stock <= 3 %}
+												<div class="stock-warning d-flex justify-content-center">
+													Only a few left!
+												</div>
+											{% endif %}
+										{% else %}
+											<div class="out-of-stock">
+												Currently unavailable
+											</div>
+										{% endif %}
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+				</div>
+				{% else %}
+				<div class="empty-wishlist d-flex justify-content-center flex-column align-items-center p-t-100 p-b-100">
+					<p class="text-center" style="font-size: 20px; font-weight: bold;">Your Wishlist is Currently Empty</p>
+					<p class="text-center" style="margin-bottom: 20px;">Start adding products you love!</p>
+					<a href="{% url 'shop_view' %}" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px;">Go to Shop</a>
+				</div>
+				{% endif %}
+				{% else %}
+				<div class="login-required d-flex justify-content-center flex-column align-items-center p-t-100 p-b-100">
+					<p class="text-center" style="font-size: 20px; font-weight: bold;">Login Required</p>
+					<p class="text-center" style="margin-bottom: 20px;">Please log in to view your wishlist and save your favourite products</p>
+					<a href="{% url 'login' %}" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px;">Login</a>
+				</div>
+				{% endif %}
+            </div>
+		</div>
+	</div>
+
+	{% endblock %}
+
+	{% block script %}
+
+</body>
+</html>
+
+	{% endblock %}
