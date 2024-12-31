@@ -38,7 +38,6 @@ class CategoryAddView(ShopRequiredMixin, TemplateView):
         subcategory_attribute_form = SubcategoryAttributeForm(request.POST)
         
         is_subcategory = bool(category_form.data.get('parent'))
-        print(is_subcategory)
         
         if category_form.is_valid():
             category = category_form.save(commit=False)
